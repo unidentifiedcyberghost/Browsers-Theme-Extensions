@@ -47,6 +47,122 @@
 
 ---
 
+## 💻 Install on YOUR Firefox Browser (Local Computer)
+
+> This is the **easiest way** to use the extension on your own Firefox right now.
+> No developer account needed. Uses the ready-made `.xpi` file.
+
+---
+
+## 💻 Install on YOUR Firefox Browser (Local Computer)
+
+> This is the **easiest way** to use the extension on your own Firefox right now.
+> No developer account needed. Uses the ready-made `.xpi` file.
+
+### 📥 Method 1 — Install via .xpi File (Recommended)
+
+```
+1. Download the .xpi file from this repo:
+   packages/ThemeForge-v1.0.0-firefox.xpi
+
+   Direct GitHub link:
+   https://github.com/unidentifiedcyberghost/Browsers-Theme-Extensions
+   → Go to  packages/  folder → click ThemeForge-v1.0.0-firefox.xpi
+   → Click the download button (⬇ Raw / Download)
+
+2. Open Firefox
+
+3. DRAG AND DROP the .xpi file directly into Firefox
+   (drag it from your Downloads folder into the Firefox window)
+
+   OR go to:  about:addons
+   → Click the gear icon ⚙ (top right)
+   → Select "Install Add-on From File..."
+   → Browse to and select:  ThemeForge-v1.0.0-firefox.xpi
+
+4. Firefox shows a permission dialog:
+   → Click "Add"  to install
+
+5. Done! Theme Forge icon (◈) appears in your Firefox toolbar.
+   Click it to choose your theme!
+```
+
+> ⚠️ NOTE: Firefox may warn "this add-on could not be verified".
+> This is normal for unsigned extensions loaded locally.
+> Click "Add Anyway" to proceed.
+> To remove this warning permanently → submit to AMO (see guide below).
+
+---
+
+### 📥 Method 2 — Install via about:debugging (Developer Mode)
+
+```
+This method loads the extension WITHOUT needing the .xpi file.
+It loads directly from the source folder.
+
+1. Open Firefox → go to:
+   about:debugging
+
+2. Click "This Firefox" in the left sidebar
+
+3. Click "Load Temporary Add-on..."
+
+4. Browse to:
+   C:/Project-PinoyUnknown/Browser-Theme-Extensions/v1.0.0/
+   Select:  manifest_firefox.json
+   (rename it to manifest.json first if Firefox does not accept it)
+
+5. Theme Forge loads immediately!
+   Click the ◈ icon in the toolbar.
+
+NOTE: Temporary add-ons are removed when Firefox restarts.
+      Use Method 1 (.xpi) for a persistent installation.
+```
+
+---
+
+### 📥 Method 3 — Enable Unsigned Extensions (Firefox Developer/Nightly)
+
+```
+If you want to permanently install without AMO review,
+use Firefox Developer Edition or Firefox Nightly:
+
+1. Download Firefox Developer Edition:
+   https://www.mozilla.org/en-US/firefox/developer/
+
+2. Open Firefox Developer Edition → go to:
+   about:config
+
+3. Search for:
+   xpinstall.signatures.required
+
+4. Double-click it to set value to:  false
+
+5. Now install the .xpi file (Method 1 above).
+   Firefox Developer Edition will NOT show the warning.
+   The extension persists after restart.
+
+NOTE: This option is NOT available in regular Firefox (stable).
+      Regular Firefox REQUIRES AMO signing for permanent installs.
+```
+
+---
+
+### 🔔 Make it Permanent — Submit to AMO
+
+```
+For a permanent, always-on installation in regular Firefox
+(not Developer Edition), the extension must be signed by Mozilla.
+
+The easiest way: submit to your AMO profile (see guide below).
+Once approved, users install it with one click and it never
+disappears on restart.
+
+Your AMO developer profile:
+https://addons.mozilla.org/en-US/firefox/user/20195701/
+```
+
+
 ## 🦊 Install on Firefox (Temporary)
 
 > This loads the extension temporarily — it disappears when Firefox restarts.
