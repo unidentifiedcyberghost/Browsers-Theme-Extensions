@@ -1,0 +1,61 @@
+{
+  "manifest_version": 2,
+  "name": "Theme Forge — Browser Theme Selector",
+  "version": "1.0.0",
+  "description": "8 stunning themes by PinoyUnknown. Cyberpunk, Hacker, Sci-Fi, Glass HUD, Night City, PinoyUnknown, Dystopian & Pink Candy.",
+  "author": "PinoyUnknown | unidentifiedcyberghost",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "themeforge@pinoyunknown.dev",
+      "strict_min_version": "109.0"
+    }
+  },
+  "homepage_url": "https://addons.mozilla.org/en-US/firefox/user/20195701/",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Theme Forge"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab/newtab.html"
+  },
+  "background": {
+    "scripts": [
+      "background/background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "shared/themes.js",
+        "content/content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "theme"
+  ],
+  "web_accessible_resources": [
+    "shared/themes.js",
+    "newtab/*",
+    "icons/*"
+  ]
+}

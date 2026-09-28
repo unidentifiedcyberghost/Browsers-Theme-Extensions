@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "Theme Forge — Browser Theme Selector",
+  "version": "1.0.0",
+  "description": "8 stunning themes: Cyberpunk, Hacker, Sci-Fi, Glass HUD, Night City, PinoyUnknown, Dystopian & Pink Candy. By PinoyUnknown.",
+  "author": "PinoyUnknown | unidentifiedcyberghost",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Theme Forge"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab/newtab.html"
+  },
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "shared/themes.js",
+        "content/content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "shared/themes.js",
+        "newtab/*",
+        "icons/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
