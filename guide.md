@@ -47,12 +47,6 @@
 
 ---
 
-## 💻 Install on YOUR Firefox Browser (Local Computer)
-
-> This is the **easiest way** to use the extension on your own Firefox right now.
-> No developer account needed. Uses the ready-made `.xpi` file.
-
----
 
 ## 💻 Install on YOUR Firefox Browser (Local Computer)
 
