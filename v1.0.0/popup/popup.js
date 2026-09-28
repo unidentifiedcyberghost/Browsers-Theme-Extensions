@@ -66,7 +66,7 @@ function drawPreview(canvas, theme) {
 // ── Render all theme cards ────────────────────────────
 function renderGrid(currentId) {
   const grid = document.getElementById('themesGrid');
-  grid.innerHTML = '';
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
 
   THEMES.forEach(theme => {
     const isActive = theme.id === currentId;
@@ -78,21 +78,50 @@ function renderGrid(currentId) {
     card.style.setProperty('--card-ac',  ac);
     card.style.setProperty('--card-rgb', rgb);
 
-    card.innerHTML =
-      (isActive ? '<div class="active-badge-card">✓ ACTIVE</div>' : '') +
-      '<div class="card-preview">' +
-        '<canvas class="card-canvas" width="180" height="58"></canvas>' +
-      '</div>' +
-      '<div class="card-body">' +
-        '<div class="card-name">' + theme.icon + ' ' + theme.name + '</div>' +
-        '<div class="card-desc">' + theme.description + '</div>' +
-        '<div class="card-tags">' +
-          theme.tags.map(t => '<span class="tag">' + t + '</span>').join('') +
-        '</div>' +
-        '<button class="card-btn' + (isActive ? ' btn-active' : '') + '" data-id="' + theme.id + '">' +
-          (isActive ? '✓ ACTIVE' : 'APPLY') +
-        '</button>' +
-      '</div>';
+    // Safe DOM construction — no innerHTML
+    if (isActive) {
+      const badge = document.createElement('div');
+      badge.className = 'active-badge-card';
+      badge.textContent = '✓ ACTIVE';
+      card.appendChild(badge);
+    }
+    const preview = document.createElement('div');
+    preview.className = 'card-preview';
+    const canvas = document.createElement('canvas');
+    canvas.className = 'card-canvas';
+    canvas.width = 180; canvas.height = 58;
+    preview.appendChild(canvas);
+    card.appendChild(preview);
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'card-name';
+    nameEl.textContent = theme.icon + ' ' + theme.name;
+    body.appendChild(nameEl);
+
+    const descEl = document.createElement('div');
+    descEl.className = 'card-desc';
+    descEl.textContent = theme.description;
+    body.appendChild(descEl);
+
+    const tagsEl = document.createElement('div');
+    tagsEl.className = 'card-tags';
+    theme.tags.forEach(t => {
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.textContent = t;
+      tagsEl.appendChild(span);
+    });
+    body.appendChild(tagsEl);
+
+    const btn = document.createElement('button');
+    btn.className = 'card-btn' + (isActive ? ' btn-active' : '');
+    btn.dataset.id = theme.id;
+    btn.textContent = isActive ? '✓ ACTIVE' : 'APPLY';
+    body.appendChild(btn);
+    card.appendChild(body);
 
     grid.appendChild(card);
     drawPreview(card.querySelector('.card-canvas'), theme);
@@ -163,3 +192,4 @@ async function setupToggles() {
   renderGrid(activeId);
   setupToggles();
 })();
+
