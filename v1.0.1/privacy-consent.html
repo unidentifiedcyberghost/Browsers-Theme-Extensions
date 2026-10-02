@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Public IP Lookup Consent — CyberSecurity Theme</title>
+  <link rel="stylesheet" href="privacy-consent.css">
+</head>
+<body>
+  <main class="consent-card">
+    <p class="eyebrow">CYBERSECURITY THEME // PRIVACY CHOICE</p>
+    <h1>Public IP address lookup</h1>
+    <p class="lead">Choose whether the new-tab globe should show your public internet IP address.</p>
+    <section class="disclosure" aria-label="What the public IP lookup does">
+      <h2>If you enable lookup</h2>
+      <p>The extension sends a request to <strong>api.ipify.org</strong> so that service can return the public IP address it sees for your connection. The request is made when the new-tab page opens and then periodically while it is open.</p>
+      <p>The IP is displayed in the globe HUD. It is not sent to the extension developer. ISP and VPN details are not requested.</p>
+      <h2>Local address and machine metrics</h2>
+      <p>The optional native helper reads a private interface IP, hostname, CPU, RAM, and disk locally. Those values stay on your device and are not sent to ipify.</p>
+      <p>Declining keeps public lookup off. The theme and local features continue to work; the public-IP display remains unavailable until you opt in from the popup.</p>
+    </section>
+    <div class="actions">
+      <button id="enableLookup" class="primary" type="button">Allow public IP lookup</button>
+      <button id="declineLookup" class="secondary" type="button">Decline public lookup</button>
+    </div>
+    <p id="consentStatus" class="status" role="status" aria-live="polite"></p>
+  </main>
+  <script src="privacy-consent.js"></script>
+</body>
+</html>

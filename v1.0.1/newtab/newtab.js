@@ -57,6 +57,75 @@ function updateClock() {
   document.getElementById('greeting').textContent = gr + ', Explorer';
 }
 
+const WORLD_CLOCKS = [
+  { label:'SOUTH KOREA', zone:'Asia/Seoul' },
+  { label:'JAPAN', zone:'Asia/Tokyo' },
+  { label:'UAE · DUBAI', zone:'Asia/Dubai' },
+  { label:'USA', zone:'America/New_York' },
+  { label:'CHINA', zone:'Asia/Shanghai' },
+  { label:'MALAYSIA', zone:'Asia/Kuala_Lumpur' },
+  { label:'THAILAND', zone:'Asia/Bangkok' },
+  { label:'INDONESIA', zone:'Asia/Jakarta' },
+  { label:'INDIA', zone:'Asia/Kolkata' },
+  { label:'CAMBODIA', zone:'Asia/Phnom_Penh' },
+  { label:'COLOMBIA', zone:'America/Bogota' },
+  { label:'TAIWAN', zone:'Asia/Taipei' },
+  { label:'PHILIPPINES', zone:'Asia/Manila' },
+  { label:'AUSTRALIA', zone:'Australia/Sydney' },
+  { label:'SPAIN', zone:'Europe/Madrid' },
+  { label:'ITALY', zone:'Europe/Rome' },
+  { label:'UK · LONDON', zone:'Europe/London' },
+];
+
+function initWorldClocks() {
+  const list = document.getElementById('worldClockList');
+  if (!list) return;
+
+  const entries = WORLD_CLOCKS.map(({ label, zone }) => {
+    const row = document.createElement('div');
+    row.className = 'world-clock-row';
+    row.dataset.zone = zone;
+
+    const city = document.createElement('span');
+    city.className = 'world-clock-city';
+    city.textContent = label;
+
+    const time = document.createElement('time');
+    time.className = 'world-clock-time';
+    time.dateTime = '';
+
+    const date = document.createElement('span');
+    date.className = 'world-clock-date';
+
+    row.append(city, time, date);
+    list.appendChild(row);
+    return {
+      time,
+      date,
+      timeFormatter: new Intl.DateTimeFormat('en-GB', {
+        timeZone: zone, hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23',
+      }),
+      dateFormatter: new Intl.DateTimeFormat('en-US', {
+        timeZone: zone, weekday:'short', month:'short', day:'numeric',
+      }),
+    };
+  });
+
+  function render() {
+    const now = new Date();
+    entries.forEach(({ time, date, timeFormatter, dateFormatter }) => {
+      time.dateTime = now.toISOString();
+      time.textContent = timeFormatter.format(now);
+      date.textContent = dateFormatter.format(now);
+    });
+  }
+
+  render();
+  setInterval(render, 1000);
+}
+
+initWorldClocks();
+
 function updateHudClock() {
   updateClock();
   const time = document.getElementById('clock').textContent;
@@ -97,44 +166,75 @@ document.getElementById('searchInput').addEventListener('input', event => {
 function initCurrencyTicker() {
   const tickerEl = document.getElementById('currencyTicker');
   if (!tickerEl) return;
-  
+
+  const apiUrl = 'https://open.er-api.com/v6/latest/USD';
+  const retryDelayMs = 15 * 60 * 1000;
+  const defaultRefreshMs = 6 * 60 * 60 * 1000;
+  let refreshTimer;
+
+  function createSequence(rates, updatedAt) {
+    const sequence = document.createElement('div');
+    sequence.className = 'currency-sequence';
+
+    rates.forEach(([code, rate]) => {
+      const pair = document.createElement('span');
+      pair.className = 'ticker-pair';
+      pair.textContent = `USD/${code} ${new Intl.NumberFormat(undefined, { maximumSignificantDigits: 7 }).format(rate)}`;
+      sequence.append(pair);
+    });
+
+    const source = document.createElement('span');
+    source.className = 'ticker-source';
+    source.textContent = `DAILY REFERENCE · SOURCE UPDATED ${updatedAt} · NOT LIVE TRADING DATA`;
+    sequence.append(source);
+    return sequence;
+  }
+
+  function scheduleRefresh(delay) {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(fetchRates, delay);
+  }
+
   async function fetchRates() {
     try {
-      const resp = await fetch('https://api.exchangerate-api.com/v4/latest/USD', { cache: 'reload' });
+      const resp = await fetch(apiUrl, { cache: 'no-store' });
+      if (!resp.ok) throw new Error(`Rates request failed (${resp.status})`);
+
       const data = await resp.json();
-      if (!data.rates) throw new Error('No rates found');
-      
-      const pairs = [
-        { from: 'USD', to: 'EUR', name: 'EUR' },
-        { from: 'USD', to: 'GBP', name: 'GBP' },
-        { from: 'USD', to: 'JPY', name: 'JPY' },
-        { from: 'USD', to: 'AUD', name: 'AUD' },
-        { from: 'USD', to: 'CAD', name: 'CAD' },
-        { from: 'USD', to: 'CHF', name: 'CHF' },
-        { from: 'USD', to: 'CNY', name: 'CNY' },
-        { from: 'USD', to: 'INR', name: 'INR' },
-      ];
-      
-      const tickers = pairs
-        .filter(p => data.rates[p.to] !== undefined)
-        .map(p => {
-          const rate = data.rates[p.to];
-          const display = p.to === 'JPY' ? Math.round(rate) : rate.toFixed(2);
-          return `1 USD = ${display} ${p.name}`;
-        });
-      
-      if (tickers.length === 0) throw new Error('No valid pairs');
-      const timestamp = new Date().toLocaleTimeString();
-      tickerEl.innerHTML = tickers.map(t => `<span class="ticker-item">${t}</span>`).join('') + 
-                           ` <span class="ticker-timestamp">Updated ${timestamp} UTC</span>`;
+      if (data.result !== 'success' || data.base_code !== 'USD' || !data.rates || typeof data.rates !== 'object') {
+        throw new Error('Currency provider returned an invalid response');
+      }
+
+      const rates = Object.entries(data.rates)
+        .filter(([code, rate]) => code !== 'USD' && /^[A-Z]{3}$/.test(code) && typeof rate === 'number' && Number.isFinite(rate) && rate > 0)
+        .sort(([left], [right]) => left.localeCompare(right));
+      if (rates.length === 0) throw new Error('Currency provider returned no valid rates');
+
+      const updateTimestamp = Number(data.time_last_update_unix);
+      if (!Number.isFinite(updateTimestamp) || updateTimestamp <= 0) {
+        throw new Error('Currency provider did not include a valid update time');
+      }
+      const updatedAt = new Date(updateTimestamp * 1000).toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
+      const track = document.createElement('div');
+      track.className = 'currency-track';
+      const sequence = createSequence(rates, updatedAt);
+      track.append(sequence, sequence.cloneNode(true));
+      tickerEl.replaceChildren(track);
+      track.style.setProperty('--ticker-duration', `${Math.max(45, Math.ceil(sequence.scrollWidth / 45))}s`);
+
+      const nextUpdate = Number(data.time_next_update_unix);
+      const nextUpdateDelay = Number.isFinite(nextUpdate) && nextUpdate > 0
+        ? Math.max(5 * 60 * 1000, (nextUpdate * 1000) - Date.now() + 30 * 1000)
+        : defaultRefreshMs;
+      scheduleRefresh(nextUpdateDelay);
     } catch (error) {
       console.warn('[CyberSecurity Theme] Currency rates unavailable:', error);
-      tickerEl.textContent = 'Exchange rates unavailable (network error)';
+      tickerEl.textContent = 'Daily currency reference rates unavailable; retrying shortly';
+      scheduleRefresh(retryDelayMs);
     }
   }
-  
+
   fetchRates();
-  setInterval(fetchRates, 3600000);
 }
 initCurrencyTicker();
 
@@ -235,12 +335,126 @@ function updateNetworkStatus() {
 }
 
 window.addEventListener('online', updateNetworkStatus);
-window.addEventListener('offline', updateNetworkStatus);
+let publicIpRequestToken = 0;
+let publicIpRefreshRequested = false;
+window.addEventListener('offline', () => {
+  publicIpRequestToken += 1;
+  updateNetworkStatus();
+  setPublicIp('OFFLINE');
+});
+window.addEventListener('online', () => { void updatePublicIp(); });
 const networkConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 if (networkConnection && typeof networkConnection.addEventListener === 'function') {
   networkConnection.addEventListener('change', updateNetworkStatus);
 }
 updateNetworkStatus();
+
+function isValidIpAddress(value) {
+  if (typeof value !== 'string') return false;
+  const address = value.trim();
+  const octets = address.split('.');
+  if (octets.length === 4 && octets.every(part => /^\d{1,3}$/.test(part) && Number(part) <= 255)) {
+    return true;
+  }
+  if (!address.includes(':') || !/^[\da-f:.]+$/i.test(address)) return false;
+  try {
+    new URL(`http://[${address}]/`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function setPublicIp(value) {
+  document.getElementById('publicIp').textContent = value;
+  document.getElementById('globePublicIp').textContent = value;
+  document.getElementById('publicIp').title = value;
+}
+
+async function updatePublicIp() {
+  const publicIp = document.getElementById('publicIp');
+  if (publicIp.dataset.loading === 'true') {
+    publicIpRefreshRequested = true;
+    return;
+  }
+  if (!navigator.onLine) {
+    setPublicIp('OFFLINE');
+    return;
+  }
+
+  publicIp.dataset.loading = 'true';
+  publicIpRefreshRequested = false;
+  const requestToken = ++publicIpRequestToken;
+  try {
+    const preferences = await tfStorage.get(['tf_public_ip_lookup_enabled']);
+    if (requestToken !== publicIpRequestToken) return;
+    if (preferences.tf_public_ip_lookup_enabled !== true) {
+      setPublicIp('OPT-IN REQUIRED');
+      return;
+    }
+    const permitted = typeof browser !== 'undefined'
+      ? await browser.permissions.contains({ origins: ['https://api.ipify.org/*'] })
+      : await new Promise(resolve => chrome.permissions.contains(
+        { origins: ['https://api.ipify.org/*'] },
+          granted => {
+            const error = chrome.runtime.lastError;
+            if (error) {
+              console.warn('[CyberSecurity Theme] Could not check ipify permission.', error.message);
+              resolve(false);
+            } else resolve(granted);
+          }
+        ));
+    if (requestToken !== publicIpRequestToken) return;
+    if (!permitted) {
+      setPublicIp('PERMISSION REQUIRED');
+      return;
+    }
+
+    const response = await fetch('https://api.ipify.org?format=json', {
+      cache: 'no-store',
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+    });
+    if (!response.ok) throw new Error(`Public IP lookup failed (${response.status})`);
+    const data = await response.json();
+    if (requestToken !== publicIpRequestToken) return;
+    if (!isValidIpAddress(data.ip)) throw new Error('IP lookup returned an invalid address');
+    setPublicIp(data.ip.trim());
+  } catch (error) {
+    if (requestToken !== publicIpRequestToken) return;
+    console.warn('[CyberSecurity Theme] Public IP lookup unavailable through ipify.', error);
+    setPublicIp('LOOKUP UNAVAILABLE');
+  } finally {
+    delete publicIp.dataset.loading;
+    if (publicIpRefreshRequested) {
+      publicIpRefreshRequested = false;
+      void updatePublicIp();
+    }
+  }
+}
+
+updatePublicIp();
+setInterval(() => { void updatePublicIp(); }, 15 * 60 * 1000);
+const storageApi = typeof browser !== 'undefined'
+  ? browser.storage
+  : (typeof chrome !== 'undefined' ? chrome.storage : null);
+storageApi?.onChanged?.addListener((changes, areaName) => {
+  if (areaName !== 'local' || !changes.tf_public_ip_lookup_enabled) return;
+  publicIpRequestToken += 1;
+  if (changes.tf_public_ip_lookup_enabled.newValue === true) void updatePublicIp();
+  else setPublicIp('OPT-IN REQUIRED');
+});
+const permissionApi = typeof browser !== 'undefined'
+  ? browser.permissions
+  : (typeof chrome !== 'undefined' ? chrome.permissions : null);
+permissionApi?.onRemoved?.addListener(permissions => {
+  if (!permissions.origins || !permissions.origins.includes('https://api.ipify.org/*')) return;
+  publicIpRequestToken += 1;
+  tfStorage.set({ tf_public_ip_lookup_enabled: false }).catch(error => {
+    console.error('[CyberSecurity Theme] Could not persist revoked ipify permission.', error);
+  });
+  setPublicIp('PERMISSION REMOVED');
+});
 
 const NATIVE_HOST = 'dev.pinoyunknown.cybersecurity_theme';
 function requestMachineMetrics() {
@@ -261,7 +475,14 @@ function updateMachinePanel(metrics) {
   document.getElementById('machineCpu').textContent = metrics.cpu;
   document.getElementById('machineMemory').textContent = metrics.memory;
   document.getElementById('machineStorage').textContent = metrics.storage;
+  document.getElementById('machineOs').textContent = typeof metrics.os === 'string' ? metrics.os : 'UPDATE HELPER';
   document.getElementById('machineName').title = metrics.hostname;
+  const localIp = typeof metrics.local_ip === 'string'
+    ? (isValidIpAddress(metrics.local_ip) ? metrics.local_ip.trim() : metrics.local_ip)
+    : 'UPDATE HELPER';
+  document.getElementById('localIp').textContent = localIp;
+  document.getElementById('globeLocalIp').textContent = localIp;
+  document.getElementById('localIp').title = localIp;
 }
 
 async function loadMachineMetrics() {
@@ -272,14 +493,22 @@ async function loadMachineMetrics() {
       throw new Error('Native helper returned an invalid metrics response.');
     }
     updateMachinePanel(metrics);
-    const data = await tfStorage.get(['tf_hud_hostname']);
-    if (!data.tf_hud_hostname) setHudHostname(metrics.hostname);
+    try {
+      const data = await tfStorage.get(['tf_hud_hostname']);
+      if (!data.tf_hud_hostname) setHudHostname(metrics.hostname);
+    } catch (error) {
+      console.warn('[CyberSecurity Theme] Could not load the saved HUD hostname.', error);
+      setHudHostname(metrics.hostname);
+    }
   } catch (error) {
-    console.info('[CyberSecurity Theme] Native metrics unavailable; install the optional local helper to show hostname, RAM, and disk.');
+    console.info('[CyberSecurity Theme] Native metrics unavailable; install the optional local helper to show hostname, RAM, and disk.', error);
     document.getElementById('machineName').textContent = 'HELPER NOT INSTALLED';
+    document.getElementById('machineOs').textContent = 'HELPER NOT INSTALLED';
     document.getElementById('machineCpu').textContent = 'NOT AVAILABLE';
     document.getElementById('machineMemory').textContent = 'NOT AVAILABLE';
     document.getElementById('machineStorage').textContent = 'NOT AVAILABLE';
+    document.getElementById('localIp').textContent = 'HELPER NOT INSTALLED';
+    document.getElementById('globeLocalIp').textContent = 'HELPER REQUIRED';
   }
 }
 loadMachineMetrics();

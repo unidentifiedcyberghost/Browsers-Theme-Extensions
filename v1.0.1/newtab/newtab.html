@@ -12,6 +12,35 @@
   <div class="wallpaper" aria-hidden="true"></div>
   <!-- Animated background canvas -->
   <canvas id="bgCanvas"></canvas>
+  <div class="planet-orbit" role="group" aria-label="Animated holographic globe HUD with public and local IP addresses">
+    <div class="planet-globe" aria-hidden="true">
+      <svg class="globe-art" viewBox="0 0 200 200">
+        <defs>
+          <radialGradient id="globe-fill" cx="35%" cy="28%">
+            <stop offset="0%" stop-color="var(--ac)" stop-opacity=".18"/>
+            <stop offset="62%" stop-color="var(--bg2)" stop-opacity=".36"/>
+            <stop offset="100%" stop-color="var(--bg)" stop-opacity=".94"/>
+          </radialGradient>
+          <clipPath id="globe-clip"><circle cx="100" cy="100" r="74"/></clipPath>
+        </defs>
+        <circle class="globe-body" cx="100" cy="100" r="74" fill="url(#globe-fill)"/>
+        <g class="globe-grid" clip-path="url(#globe-clip)">
+          <ellipse cx="100" cy="100" rx="35" ry="74"/>
+          <ellipse cx="100" cy="100" rx="62" ry="74"/>
+          <path d="M25 100h150M31 72c38 17 100 17 138 0M31 128c38-17 100-17 138 0M45 48c32 13 78 13 110 0M45 152c32-13 78-13 110 0"/>
+          <path class="globe-land" d="m53 69 13-8 10 3 8-6 11 5-4 9 10 5-4 8-13 2-7 9-10-4-2-10-8-5zm51 27 9-8 13 2 7 8 13 2 6 11-8 8-14-4-8 8-9-5-2-12-10-3zm-39 26 11-5 8 7-4 13-10 8-9-5-2-10z"/>
+        </g>
+        <circle class="globe-rim" cx="100" cy="100" r="74"/>
+        <path class="globe-meridian" d="M30 100c22-22 118-22 140 0-22 22-118 22-140 0z"/>
+      </svg>
+      <span class="globe-scan"></span>
+    </div>
+    <div class="planet-ip-overlay" aria-live="polite">
+      <div><span>PUBLIC // </span><span class="planet-ip-value" id="globePublicIp">LOOKUP PENDING</span></div>
+      <div><span>LOCAL // </span><span class="planet-ip-value" id="globeLocalIp">HELPER REQUIRED</span></div>
+    </div>
+    <span class="planet-orbit-label">PLANETARY // LIVE</span>
+  </div>
 
   <div class="page" id="page">
 
@@ -27,18 +56,20 @@
     </div>
 
     <!-- ── CURRENCY TICKER ───────────────────────────────── -->
-    <div id="currencyTicker" class="currency-ticker" aria-live="polite" aria-label="Real-time currency exchange rates">
-      <span class="ticker-item">Loading rates…</span>
+    <div id="currencyTicker" class="currency-ticker" aria-live="off" aria-label="Daily USD reference exchange rates; not live trading quotes">
+      <span class="ticker-status">Loading daily reference rates…</span>
     </div>
 
-    <section class="network-panel" aria-label="Local machine and network status">
+    <section class="network-panel" aria-label="Machine and IP status; public address is queried through ipify and local address is read by the optional helper">
       <div class="network-heading">
-        <span>NETWORK // LOCAL ONLY</span>
-        <span id="networkPrivacy">IP / ISP / VPN NOT READ</span>
+        <span>NETWORK // MACHINE STATUS</span>
+        <span id="networkPrivacy">IPIFY OPT-IN · ISP / VPN NOT QUERIED</span>
       </div>
       <div class="network-stats">
         <div class="network-stat"><span class="network-label">MACHINE</span><span class="network-value" id="machineName">DETECTING</span></div>
         <div class="network-stat"><span class="network-label">LINK</span><span class="network-value" id="networkStatus">CHECKING</span></div>
+        <div class="network-stat"><span class="network-label">PUBLIC IP</span><span class="network-value" id="publicIp" title="The public IP is requested from api.ipify.org.">LOOKUP PENDING</span></div>
+        <div class="network-stat"><span class="network-label">LOCAL IP</span><span class="network-value" id="localIp">HELPER NOT INSTALLED</span></div>
         <div class="network-stat"><span class="network-label">CPU</span><span class="network-value" id="machineCpu">HELPER NOT INSTALLED</span></div>
         <div class="network-stat"><span class="network-label">RAM</span><span class="network-value" id="machineMemory">HELPER NOT INSTALLED</span></div>
         <div class="network-stat"><span class="network-label">OS</span><span class="network-value" id="machineOs">HELPER NOT INSTALLED</span></div>
@@ -56,61 +87,79 @@
       <div class="hud-corner c-bl"></div>
       <div class="hud-corner c-br"></div>
 
-      <section class="system-hud" aria-label="Conky-inspired system time display">
-        <div class="hud-heading">
-          <span class="hud-label"><span class="terminal-prompt" id="terminalHeader">root@PinoyUnknown:~$</span> conky --hud</span>
-          <span class="hud-live"><span class="hud-live-dot"></span>LIVE</span>
-        </div>
-        <div class="access-line"><span>ACCESS MODE // SIMULATED HUD</span><strong>ACCESS GRANTED</strong></div>
-        <div class="clock-block">
-          <div class="clock" id="clock">00:00:00</div>
-          <div class="date-row">
-            <span class="date" id="date">—</span>
-            <span class="date-sep">·</span>
-            <span class="tz" id="tz">UTC</span>
+      <div class="main-layout">
+        <section class="bookmarks-panel" aria-labelledby="bookmarksTitle">
+          <div class="bookmarks-heading">
+            <span class="bookmarks-title" id="bookmarksTitle">SAVED BOOKMARKS</span>
+            <span class="bookmarks-hint">RECENT</span>
+          </div>
+          <div class="bookmarks-list" id="bookmarksList" aria-live="polite">
+            <span class="bookmarks-state">Loading bookmarks…</span>
+          </div>
+        </section>
+
+        <div class="main-center">
+          <div class="engine-tabs" id="engineTabs" aria-label="Choose a search engine">
+            <button class="eng-btn active" data-url="https://www.google.com/search?q=" aria-label="Search with Google" title="Google">G</button>
+            <button class="eng-btn" data-url="https://www.bing.com/search?q=" aria-label="Search with Bing" title="Bing">B</button>
+            <button class="eng-btn" data-url="https://duckduckgo.com/?q=" aria-label="Search with DuckDuckGo" title="DuckDuckGo">D</button>
+            <button class="eng-btn" data-url="https://www.youtube.com/results?search_query=" aria-label="Search with YouTube" title="YouTube">YT</button>
+          </div>
+
+          <section class="system-hud" aria-label="Conky-inspired system time display">
+            <div class="hud-heading">
+              <span class="hud-label"><span class="terminal-prompt" id="terminalHeader">root@PinoyUnknown:~$</span> conky --hud</span>
+              <span class="hud-live"><span class="hud-live-dot"></span>LIVE</span>
+            </div>
+            <div class="access-line"><span>ACCESS MODE // SIMULATED HUD</span><strong>ACCESS GRANTED</strong></div>
+            <div class="clock-block">
+              <div class="clock" id="clock">00:00:00</div>
+              <div class="date-row">
+                <span class="date" id="date">—</span>
+                <span class="date-sep">·</span>
+                <span class="tz" id="tz">UTC</span>
+              </div>
+            </div>
+            <div class="terminal-caption">
+              <span class="terminal-prompt" id="terminalPrompt">root@PinoyUnknown:~$</span>
+              <span class="terminal-command" id="terminalQuery">watch -n 1 local_hud</span>
+              <span class="terminal-caret"></span>
+            </div>
+            <div class="hud-footer">
+              <span>THEME PROFILE</span>
+              <span class="hud-profile" id="hudProfile">CYBERPUNK NEON</span>
+              <span class="hud-runtime">CYBERSECURITY THEME / v1.0.1</span>
+            </div>
+          </section>
+
+          <!-- Greeting -->
+          <div class="greeting" id="greeting">Good evening, Explorer</div>
+
+          <!-- Search -->
+          <div class="search-wrap">
+            <div class="search-bar">
+              <span class="srch-icon">⌕</span>
+              <input type="text" id="searchInput" class="srch-input" placeholder="Search the network…" autocomplete="off">
+              <button class="srch-btn" id="searchBtn">⏎</button>
+            </div>
           </div>
         </div>
-        <div class="terminal-caption">
-          <span class="terminal-prompt" id="terminalPrompt">root@PinoyUnknown:~$</span>
-          <span class="terminal-command" id="terminalQuery">watch -n 1 local_hud</span>
-          <span class="terminal-caret"></span>
-        </div>
-        <div class="hud-footer">
-          <span>THEME PROFILE</span>
-          <span class="hud-profile" id="hudProfile">CYBERPUNK NEON</span>
-          <span class="hud-runtime">CYBERSECURITY THEME / v1.0.1</span>
-        </div>
-      </section>
 
-      <section class="bookmarks-panel" aria-labelledby="bookmarksTitle">
-        <div class="bookmarks-heading">
-          <span class="bookmarks-title" id="bookmarksTitle">SAVED BOOKMARKS</span>
-          <span class="bookmarks-hint">RECENTLY SAVED</span>
-        </div>
-        <div class="bookmarks-list" id="bookmarksList" aria-live="polite">
-          <span class="bookmarks-state">Loading bookmarks…</span>
-        </div>
-      </section>
+        <aside class="right-rail" aria-label="World clocks and referral links">
+          <section class="world-clocks" aria-labelledby="worldClockTitle">
+            <div class="rail-heading">
+              <span id="worldClockTitle">WORLD CLOCK // UTC SYNC</span>
+            </div>
+            <div class="world-clock-list" id="worldClockList" aria-live="off"></div>
+          </section>
 
-      <!-- Planet Globe HUD -->
-      <div id="planetGlobe" class="planet-globe" aria-label="Rotating planet globe" role="img"></div>
-
-      <!-- Greeting -->
-      <div class="greeting" id="greeting">Good evening, Explorer</div>
-
-      <!-- Search -->
-      <div class="search-wrap">
-        <div class="engine-tabs" id="engineTabs">
-          <button class="eng-btn active" data-url="https://www.google.com/search?q=">G</button>
-          <button class="eng-btn" data-url="https://www.bing.com/search?q=">B</button>
-          <button class="eng-btn" data-url="https://duckduckgo.com/?q=">🦆</button>
-          <button class="eng-btn" data-url="https://www.youtube.com/results?search_query=">▶</button>
-        </div>
-        <div class="search-bar">
-          <span class="srch-icon">⌕</span>
-          <input type="text" id="searchInput" class="srch-input" placeholder="Search the network…" autocomplete="off">
-          <button class="srch-btn" id="searchBtn">⏎</button>
-        </div>
+          <section class="referral-panel" aria-labelledby="referralTitle">
+            <div class="rail-heading" id="referralTitle">REFERRAL LINKS</div>
+            <a href="https://rewards.bing.com/welcome?rh=57A3288&amp;ref=rafsrchae" class="referral-link" target="_blank" rel="noopener noreferrer">Microsoft Rewards</a>
+            <a href="https://www.hostinger.com/pricing?REFERRALCODE=DPDCABINCEHM" class="referral-link" target="_blank" rel="noopener noreferrer">Hostinger</a>
+            <p class="affiliate-disclosure">Hostinger is an affiliate link; the developer may earn a commission.</p>
+          </section>
+        </aside>
       </div>
 
     </main>
@@ -118,14 +167,21 @@
     <!-- ── DEVELOPER FOOTER ────────────────────────────────── -->
     <footer class="dev-footer">
       <div class="dev-footer-inner">
-        <span class="dev-brand">PINOYUNKNOWN · UNIDENTIFIEDCYBERGHOST</span>
+        <span class="dev-brand">Support the Developer: UNIDENTIFIEDCYBERGHOST / PINOYUNKNOWN</span>
+        <section class="developer-thanks" aria-labelledby="developerThanksTitle">
+          <h2 id="developerThanksTitle">A Note From the Developer</h2>
+          <p>Thank you for choosing CyberSecurity Theme! I build futuristic, high-quality tools as an independent developer. Tips are always appreciated, never expected, and help support future software projects.</p>
+          <a class="paypal-support" href="https://www.paypal.com/paypalme/facebookgamer" target="_blank" rel="noopener noreferrer">SHOW YOUR SUPPORT VIA PAYPAL</a>
+          <span>Support a solo dev · Help fund future futuristic software projects.</span>
+        </section>
         <div class="footer-links">
-          <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="footer-link" target="_blank" title="Google Play Store — PinoyUnknown Apps">🎮 Play Store</a>
-          <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="footer-link" target="_blank" title="Firefox Add-ons — PinoyUnknown">🦊 Firefox Addons</a>
-          <a href="https://github.com/unidentifiedcyberghost" class="footer-link" target="_blank" title="GitHub — unidentifiedcyberghost">🐙 CyberHost</a>
-          <a href="https://github.com/pinoyUnknown" class="footer-link" target="_blank" title="GitHub — PinoyUnknown">🐙 PinoyUnk</a>
-          <a href="https://instagram.com/pinoyunknown" class="footer-link" target="_blank" title="Instagram @pinoyunknown">📸 Instagram</a>
-          <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="footer-link" target="_blank" title="YouTube — PinoyUnknown">▶ YouTube</a>
+          <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="footer-link" target="_blank" rel="noopener noreferrer" title="Google Play Store — PinoyUnknown Apps">Play Store</a>
+          <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="footer-link" target="_blank" rel="noopener noreferrer" title="Firefox Add-ons — PinoyUnknown">Firefox Addons</a>
+          <a href="https://github.com/unidentifiedcyberghost" class="footer-link" target="_blank" rel="noopener noreferrer" title="GitHub — unidentifiedcyberghost">CyberGhost</a>
+          <a href="https://github.com/pinoyUnknown" class="footer-link" target="_blank" rel="noopener noreferrer" title="GitHub — PinoyUnknown">PinoyUnknown</a>
+          <a href="https://instagram.com/pinoyunknown" class="footer-link" target="_blank" rel="noopener noreferrer" title="Instagram @pinoyunknown">Instagram</a>
+          <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="footer-link" target="_blank" rel="noopener noreferrer" title="YouTube — PinoyUnknown">YouTube</a>
+          <a href="https://rewards.bing.com/welcome?rh=57A3288&amp;ref=rafsrchae" class="footer-link" target="_blank" rel="noopener noreferrer" title="Microsoft Rewards referral">Earn Rewards</a>
         </div>
       </div>
     </footer>

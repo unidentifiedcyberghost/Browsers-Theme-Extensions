@@ -82,7 +82,7 @@ function renderGrid(currentId) {
     if (isActive) {
       const badge = document.createElement('div');
       badge.className = 'active-badge-card';
-      badge.textContent = '✓ ACTIVE';
+      badge.textContent = 'ACTIVE';
       card.appendChild(badge);
     }
     const preview = document.createElement('div');
@@ -98,7 +98,7 @@ function renderGrid(currentId) {
 
     const nameEl = document.createElement('div');
     nameEl.className = 'card-name';
-    nameEl.textContent = theme.icon + ' ' + theme.name;
+    nameEl.textContent = theme.name;
     body.appendChild(nameEl);
 
     const descEl = document.createElement('div');
@@ -119,7 +119,7 @@ function renderGrid(currentId) {
     const btn = document.createElement('button');
     btn.className = 'card-btn' + (isActive ? ' btn-active' : '');
     btn.dataset.id = theme.id;
-    btn.textContent = isActive ? '✓ ACTIVE' : 'APPLY';
+    btn.textContent = isActive ? 'ACTIVE' : 'APPLY';
     body.appendChild(btn);
     card.appendChild(body);
 
@@ -136,7 +136,6 @@ function renderGrid(currentId) {
   const t = THEMES.find(x => x.id === currentId);
   if (t) {
     document.getElementById('activeName').textContent = t.name;
-    document.getElementById('logoIcon').textContent   = t.icon;
     setPopupAccent(t);
   }
 }
@@ -166,16 +165,20 @@ async function applyTheme(id) {
 
 // ── Toggles ───────────────────────────────────────────
 async function setupToggles() {
-  const data = await tfStorage.get(['tf_inject_sites','tf_custom_newtab','tf_hud_hostname']);
+  const data = await tfStorage.get(['tf_inject_sites','tf_hud_hostname']);
   const iT = document.getElementById('injectToggle');
-  const nT = document.getElementById('newtabToggle');
+  const ipToggle = document.getElementById('publicIpToggle');
+  const ipStatus = document.getElementById('publicIpStatus');
   const hostInput = document.getElementById('hudHostInput');
   const hostSave = document.getElementById('hudHostSave');
   const hostStatus = document.getElementById('hudHostStatus');
 
   iT.checked = data.tf_inject_sites  !== false;
-  nT.checked = data.tf_custom_newtab !== false;
+  ipToggle.checked = false;
   hostInput.value = data.tf_hud_hostname || 'PinoyUnknown';
+  const ipData = await tfStorage.get(['tf_public_ip_lookup_enabled']);
+  ipToggle.checked = ipData.tf_public_ip_lookup_enabled === true;
+  if (ipToggle.checked) ipStatus.textContent = 'Public IP lookup is enabled; api.ipify.org receives the request IP.';
 
   iT.addEventListener('change', () => {
     tfStorage.set({ tf_inject_sites: iT.checked });
@@ -186,7 +189,54 @@ async function setupToggles() {
       }));
     } catch(_){}
   });
-  nT.addEventListener('change', () => tfStorage.set({ tf_custom_newtab: nT.checked }));
+  ipToggle.addEventListener('change', async () => {
+    const enabled = ipToggle.checked;
+    const api = (typeof browser !== 'undefined') ? browser : chrome;
+    ipToggle.disabled = true;
+    try {
+      if (enabled) {
+        const granted = typeof browser !== 'undefined'
+          ? await browser.permissions.request({ origins: ['https://api.ipify.org/*'] })
+          : await new Promise((resolve, reject) => chrome.permissions.request(
+            { origins: ['https://api.ipify.org/*'] },
+            result => {
+              const error = chrome.runtime.lastError;
+              if (error) reject(new Error(error.message));
+              else resolve(result);
+            }
+          ));
+        if (!granted) throw new Error('The ipify permission was not granted.');
+        await tfStorage.set({ tf_public_ip_lookup_enabled: true });
+        ipStatus.textContent = 'Enabled. api.ipify.org receives your public IP request.';
+      } else {
+        await tfStorage.set({ tf_public_ip_lookup_enabled: false });
+        try {
+          const removed = typeof browser !== 'undefined'
+            ? await browser.permissions.remove({ origins: ['https://api.ipify.org/*'] })
+            : await new Promise((resolve, reject) => chrome.permissions.remove(
+              { origins: ['https://api.ipify.org/*'] },
+              result => {
+                const error = chrome.runtime.lastError;
+                if (error) reject(new Error(error.message));
+                else resolve(result);
+              }
+            ));
+          ipStatus.textContent = removed
+            ? 'Disabled. The optional ipify permission was removed.'
+            : 'Disabled. Public IP lookup is off.';
+        } catch (error) {
+          console.warn('[CyberSecurity Theme] Could not remove the optional ipify permission.', error);
+          ipStatus.textContent = 'Disabled. Public lookup is off, but the browser permission remains granted.';
+        }
+      }
+    } catch (error) {
+      ipToggle.checked = !enabled;
+      ipStatus.textContent = enabled ? 'Not enabled. Grant the optional ipify permission to show the public IP.' : 'Could not update the public IP setting.';
+      if (enabled) console.warn('[CyberSecurity Theme] Public IP lookup was not enabled.', error);
+    } finally {
+      ipToggle.disabled = false;
+    }
+  });
   hostSave.addEventListener('click', async () => {
     const hostname = hostInput.value.trim();
     if (!/^[a-zA-Z0-9_-]{1,24}$/.test(hostname)) {

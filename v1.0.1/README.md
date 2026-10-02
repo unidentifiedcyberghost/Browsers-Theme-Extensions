@@ -5,13 +5,17 @@
 
 ## Current release: v1.0.1
 
-Adds an original bundled cyber-city wallpaper, an animated Linux terminal/Conky-style HUD, saved-bookmark shortcuts, privacy-safe local network status, and reduced-motion support. The HUD animation and colors stay consistent across all eight themes.
+Adds an original bundled cyber-city wallpaper, an animated Linux terminal/Conky-style HUD, saved-bookmark shortcuts, a holographic globe HUD with optional public/private IP readouts, daily USD reference rates for every currency the provider returns, and reduced-motion support. Rates include the provider's source timestamp and are not live trading quotes.
 
 Firefox AMO upload: `packages/CyberSecurityTheme-v1.0.1-firefox.zip`. If the add-on is absent from your public profile, check its review state and public/on-site distribution in the AMO Developer Hub.
 
-The network panel displays online/offline status and connection type only when the browser reports it. It does not read public IP, ISP, or VPN details or contact lookup services.
+Public IP lookup is off by default. A first-run consent page explains that api.ipify.org sees the request IP, and the user must opt in and grant the optional host permission before the address is displayed. The value is not sent to the extension developer. The optional native helper reads the private interface IP locally. ISP and VPN details are not requested. Public lookup can be disabled in the popup.
 
-For actual machine hostname, CPU, RAM, and home-disk values, install the optional local native helper in `native-host/`. It supports Windows, Linux, and macOS, communicates only with the extension over native messaging, and sends no metrics over the network. Without the helper, system metrics are clearly marked unavailable.
+The popup and new-tab footer thank users for supporting this independent project and offer an optional [PayPal tip](https://www.paypal.com/paypalme/facebookgamer). Support is appreciated but never expected.
+
+In the popup, find the “Love this app?” support card near the bottom. In the new-tab page, “A Note From the Developer” and its smaller explanatory message are cyan floating text without a border or background; “SHOW YOUR SUPPORT VIA PAYPAL” is a cyan button. The “Support a solo dev” tagline uses a slightly larger font. Both messages clearly state that tips are optional.
+
+For actual machine hostname, private interface IP, CPU, RAM, and home-disk values, install the optional local native helper in `native-host/`. It supports Windows, Linux, and macOS, communicates only with the extension over native messaging, and sends no metrics over the network. Without the helper, local system metrics are clearly marked unavailable.
 
 The terminal echoes text typed into the new-tab search box with a typing animation and shows the current website/search host after navigation. Browser address-bar text is not accessible to extensions. An editable display name is available in the popup; the optional helper can supply the actual OS hostname.
 
@@ -21,13 +25,19 @@ The terminal echoes text typed into the new-tab search box with a typing animati
 
 | Feature | Description |
 |---|---|
-| 🎨 **8 Premium Themes** | Cyberpunk Neon, Blackhat Hacker, Sci-Fi HUD, Glass HUD, Cyberpunk HUD, PinoyUnknown, Dystopian, Pink Candy |
+| 🎨 **9 Premium Themes** | Cyberpunk Neon, Blackhat Hacker, Sci-Fi HUD, Glass HUD, Cyberpunk HUD, PinoyUnknown, Dystopian, Pink Candy, CyberSecurity Dark |
 | 🖥️ **New Tab Override** | Fully themed new tab with animated backgrounds, digital clock, and search bar |
+| 🌍 **Holographic Globe HUD** | Original animated wireframe globe with theme-colored orbit rings, meridians, and scan sweep at the upper-left of the new-tab background; honors reduced-motion settings |
+| 💱 **Currency Reference Ticker** | All valid currencies in the public USD reference-rate response; shows the upstream update time, refreshes at the provider's next update, and labels rates as daily/indicative rather than live trading quotes |
+| 🔐 **IP Address HUD** | Public IP lookup is opt-in and uses ipify; private interface IP is read locally through the optional helper. ISP/VPN are not queried |
+| 🌐 **World Clock Rail** | Live clock and date in 17 requested locations, using their IANA time zones |
 | 💉 **Website CSS Injection** | Injects theme CSS variables (scrollbar, selection color) into every website |
 | 🦊 **Firefox Browser Theme** | Dynamically updates Firefox browser UI colors via the theme API |
 | 🔄 **Persistent Settings** | Remembers your chosen theme across browser sessions |
 | 🔍 **Multi-Engine Search** | Google, Bing, DuckDuckGo, YouTube — switch engines from new tab |
 | 📱 **Cross-Browser** | Chrome MV3, Firefox MV2, Edge, Brave |
+
+The world-clock rail sits high in the right column and shows all 17 locations at once without a scrollbar; country names are bold white and have no glow. The center clock is compact with reduced visual effects, while the search field has a stronger accent border, background, and focus state.
 
 ---
 
@@ -49,19 +59,22 @@ The terminal echoes text typed into the new-tab search box with a typing animati
 ## 🚀 Installation
 
 ### Chrome / Edge / Brave
-1. Download or clone this repo
-2. Navigate into the `v1.0.1/` folder
-3. Open browser → `chrome://extensions/` (or `edge://extensions/`)
-4. Enable **Developer Mode** (top right toggle)
-5. Click **"Load unpacked"** → select the `v1.0.1/` folder
-6. Click the 🔥 Theme Forge icon in your toolbar
+**Local testing:** Open `chrome://extensions`, `edge://extensions`, or `brave://extensions`, enable Developer mode, choose **Load unpacked**, and select the `v1.0.1/` folder.
+
+**Chrome Web Store:** Register through the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole), choose **Add new item**, upload `packages/CyberSecurityTheme-v1.0.1-chromium.zip`, complete listing/privacy/permission disclosures, and submit for review.
+
+**Microsoft Edge Add-ons:** Sign in to the [Microsoft Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview), upload the Chromium ZIP in the Edge Add-ons dashboard, complete listing/privacy disclosures, and submit for certification.
+
+**Brave / Opera:** For testing, load the unpacked folder from `brave://extensions` or `opera://extensions`. For distribution, use a compatible Chromium Web Store listing where supported or submit the Chromium ZIP through the browser's official extension developer portal.
 
 ### Firefox
-1. Download and extract `packages/CyberSecurityTheme-v1.0.1-firefox.zip`
-2. Open Firefox → `about:debugging`
-3. Click **"This Firefox"** → **"Load Temporary Add-on"**
-4. Select the `manifest.json` file inside the extracted folder
-5. Temporary installs are removed when Firefox restarts. For a permanent install, submit the ZIP to AMO and wait for public approval/signing.
+**Temporary testing:** Extract `packages/CyberSecurityTheme-v1.0.1-firefox.zip`, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…**, and select the extracted `manifest.json`. Firefox removes temporary add-ons on restart.
+
+**AMO submission/update:** Sign in to the [AMO Developer Hub](https://addons.mozilla.org/developers/), choose **Submit a New Add-on** and **On this site** for a new listing, or open the existing listing to submit an update. Upload the Firefox ZIP, pass AMO validation, finish the listing and privacy/data-use questionnaire, and provide source code if AMO requests it. Submit for review and track signing/review status in the Developer Hub. Public distribution starts only after approval.
+
+The Firefox package contains the Firefox manifest as root `manifest.json`. Use the separate Chromium package for Chrome/Edge and other Chromium-based store submissions. Rebuild both archives from the repository root with `.\v1.0.1\package_release.ps1`.
+
+Rebuild both release archives from the repository root with `.\v1.0.1\package_release.ps1`.
 
 > 🦊 **Firefox Add-ons Profile:** [PinoyUnknown on AMO](https://addons.mozilla.org/en-US/firefox/user/20195701/)
 
@@ -88,7 +101,7 @@ Browser-Theme-Extensions/
 |---|---|
 | 🎮 Google Play Store | [PinoyUnknown Apps](https://play.google.com/store/apps/dev?id=7374638355121114347) |
 | 🦊 Firefox Add-ons | [PinoyUnknown on AMO](https://addons.mozilla.org/en-US/firefox/user/20195701/) |
-| 🐙 GitHub (CyberHost) | [unidentifiedcyberghost](https://github.com/unidentifiedcyberghost) |
+| 🐙 GitHub (CyberGhost) | [unidentifiedcyberghost](https://github.com/unidentifiedcyberghost) |
 | 🐙 GitHub (Brand) | [pinoyUnknown](https://github.com/pinoyUnknown) |
 | 📸 Instagram | [@pinoyunknown](https://instagram.com/pinoyunknown) |
 | ▶ YouTube | [PinoyUnknown Channel](https://www.youtube.com/watch?v=zrF1EoEh1-w) |
@@ -106,6 +119,13 @@ Browser-Theme-Extensions/
 - Added original bundled cyber-city SVG wallpaper with theme-colored lighting overlays.
 - Added subtle page entrance and ambient wallpaper animations.
 - Added animated Conky-style terminal scanlines, accent glow, prompt, and cursor; the selected theme's accent color is used across the HUD.
+- Added an original animated wireframe globe with theme-colored orbit rings, meridians, and a scan sweep in the upper-left background.
+- Simplified the search-engine buttons to minimal G/B/D/YT labels and updated the developer footer with icon-free links and the support line.
+- Moved saved browser bookmarks into a compact, vertically scrolling left-side panel.
+- Updated the popup with icon-free theme cards and developer links, site-theme controls, a terminal display alias, and clear local-metrics privacy guidance.
+- Added first-run disclosure and opt-in for public IP lookup through ipify; added a separately revocable popup switch and optional Firefox `locationInfo` declaration.
+- Added the Bing Rewards referral beside the Bing search selector and the disclosed Hostinger affiliate link to the support links.
+- Moved search-engine selection above the live clock and added the right-side world clock rail and referral card. Added “Earn Rewards” to the footer.
 - Added responsive new-tab styling and reduced-motion support; canvas effects pause when the tab is hidden or motion is reduced.
 - Added a theme-colored Conky-inspired live clock/date HUD and shortcuts to up to 8 recently saved browser bookmarks.
 - Added local online/offline and browser-reported connection-type status. Public IP, ISP, and VPN details are not collected or sent to external services.

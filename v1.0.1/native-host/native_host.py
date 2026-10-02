@@ -2,10 +2,12 @@
 """Local-only native messaging host for CyberSecurity Theme."""
 
 import ctypes
+import ipaddress
 import json
 import os
 import platform
 import re
+import socket
 import shutil
 import struct
 import subprocess
@@ -124,6 +126,23 @@ def format_bytes(value):
     return f"{amount:.1f} TB"
 
 
+def read_local_ip():
+    targets = (
+        (socket.AF_INET, ("192.0.2.1", 9)),
+        (socket.AF_INET6, ("2001:db8::1", 9, 0, 0)),
+    )
+    for family, target in targets:
+        try:
+            with socket.socket(family, socket.SOCK_DGRAM) as connection:
+                connection.connect(target)
+                address = ipaddress.ip_address(connection.getsockname()[0])
+            if address.is_private and not address.is_loopback and not address.is_link_local:
+                return str(address)
+        except (OSError, ValueError):
+            continue
+    return "NOT AVAILABLE"
+
+
 def get_metrics():
     total_memory, available_memory = read_memory()
     disk = shutil.disk_usage(Path.home())
@@ -135,9 +154,11 @@ def get_metrics():
 
     return {
         "hostname": platform.node() or os.environ.get("COMPUTERNAME", "Unknown"),
+        "os": platform.system(),
         "memory": f"{format_bytes(total_memory - available_memory)} / {format_bytes(total_memory)}",
         "storage": f"{format_bytes(disk.free)} free / {format_bytes(disk.total)}",
         "cpu": cpu_text,
+        "local_ip": read_local_ip(),
     }
 
 

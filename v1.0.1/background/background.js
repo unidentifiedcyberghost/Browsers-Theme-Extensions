@@ -13,9 +13,15 @@ _api.runtime.onInstalled.addListener(({ reason }) => {
     store.set({
       tf_active_theme:  'cyberpunk-neon',
       tf_inject_sites:  true,
-      tf_custom_newtab: true,
+      tf_public_ip_lookup_enabled: false,
     });
     console.log('[Theme Forge] Installed. Default theme: cyberpunk-neon');
+  } else if (reason === 'update') {
+    const store = isFirefox ? browser.storage.local : chrome.storage.local;
+    store.set({ tf_public_ip_lookup_enabled: false });
+  }
+  if (reason === 'install' || reason === 'update') {
+    _api.tabs.create({ url: _api.runtime.getURL('privacy-consent.html'), active: true });
   }
 });
 

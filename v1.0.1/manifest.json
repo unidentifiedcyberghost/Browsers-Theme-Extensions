@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CyberSecurity Theme v1.0.1",
   "version": "1.0.1",
-  "description": "8 animated browser themes with a Conky-inspired HUD, saved bookmarks, and privacy-safe network status. By PinoyUnknown.",
+  "description": "9 animated browser themes with a Conky-inspired HUD, world clocks, saved bookmarks, and opt-in public IP lookup. By PinoyUnknown.",
   "author": "PinoyUnknown | unidentifiedcyberghost",
   "icons": {
     "16": "icons/icon16.png",
@@ -45,7 +45,10 @@
     "nativeMessaging"
   ],
   "host_permissions": [
-    "https://api.exchangerate-api.com/*"
+    "https://open.er-api.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://api.ipify.org/*"
   ],
   "web_accessible_resources": [
     {

@@ -2,17 +2,15 @@
   "manifest_version": 2,
   "name": "CyberSecurity Theme v1.0.1",
   "version": "1.0.1",
-  "description": "8 animated browser themes with a Conky-inspired HUD, saved bookmarks, and privacy-safe network status.",
+  "description": "9 animated browser themes with a Conky-inspired HUD, world clocks, saved bookmarks, and opt-in public IP lookup.",
   "author": "PinoyUnknown | unidentifiedcyberghost",
   "browser_specific_settings": {
     "gecko": {
       "id": "cybersecurity-theme@pinoyunknown.dev",
       "strict_min_version": "109.0",
       "data_collection_permissions": {
-        "required": [
-          "none"
-        ],
-        "optional": []
+        "required": [],
+        "optional": ["locationInfo"]
       }
     }
   },
@@ -59,10 +57,11 @@
     "activeTab",
     "theme",
     "bookmarks",
-    "nativeMessaging"
+    "nativeMessaging",
+    "https://open.er-api.com/*"
   ],
-  "host_permissions": [
-    "https://api.exchangerate-api.com/*"
+  "optional_permissions": [
+    "https://api.ipify.org/*"
   ],
   "web_accessible_resources": [
     "shared/themes.js",

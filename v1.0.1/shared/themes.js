@@ -290,13 +290,29 @@ function tfColorToRgb(c) {
 function getThemeById(id) { return THEMES.find(t => t.id === id) || THEMES[0]; }
 
 const tfStorage = {
-  get: keys => new Promise(res => {
-    const a = (typeof browser!=='undefined') ? browser.storage.local : chrome.storage.local;
-    a.get(keys, res);
+  get: keys => new Promise((resolve, reject) => {
+    if (typeof browser !== 'undefined') {
+      browser.storage.local.get(keys).then(resolve, reject);
+      return;
+    }
+
+    chrome.storage.local.get(keys, result => {
+      const error = chrome.runtime.lastError;
+      if (error) reject(new Error(error.message));
+      else resolve(result);
+    });
   }),
-  set: data => new Promise(res => {
-    const a = (typeof browser!=='undefined') ? browser.storage.local : chrome.storage.local;
-    a.set(data, res);
+  set: data => new Promise((resolve, reject) => {
+    if (typeof browser !== 'undefined') {
+      browser.storage.local.set(data).then(resolve, reject);
+      return;
+    }
+
+    chrome.storage.local.set(data, () => {
+      const error = chrome.runtime.lastError;
+      if (error) reject(new Error(error.message));
+      else resolve();
+    });
   })
 };
 

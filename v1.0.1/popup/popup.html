@@ -14,14 +14,12 @@
     <!-- ── HEADER ─────────────────────────────────────────── -->
     <header class="header">
       <div class="logo-wrap">
-        <div class="logo-icon" id="logoIcon">◈</div>
         <div class="logo-text">
           <h1 class="logo-title">CyberSecurity Theme</h1>
           <span class="logo-sub">by PinoyUnknown</span>
         </div>
       </div>
       <div class="active-badge" id="activeBadge">
-        <span class="pulse-dot"></span>
         <span class="active-name" id="activeName">Loading…</span>
       </div>
     </header>
@@ -37,15 +35,21 @@
     <div class="themes-grid" id="themesGrid"><!-- rendered by JS --></div>
 
     <!-- ── TOGGLES ─────────────────────────────────────────── -->
+    <div class="section-hdr settings-hdr">
+      <span class="sec-line"></span>
+      <span class="sec-title">PREFERENCES</span>
+      <span class="sec-line"></span>
+    </div>
     <div class="toggles-wrap">
       <div class="toggle-row">
         <span class="tgl-label">Apply theme to websites</span>
-        <label class="tgl-switch"><input type="checkbox" id="injectToggle"><span class="tgl-slider"></span></label>
+        <label class="tgl-switch" aria-label="Apply selected theme to websites"><input type="checkbox" id="injectToggle"><span class="tgl-slider"></span></label>
       </div>
       <div class="toggle-row">
-        <span class="tgl-label">Custom New Tab page</span>
-        <label class="tgl-switch"><input type="checkbox" id="newtabToggle" checked><span class="tgl-slider"></span></label>
+        <span class="tgl-label">Show public IP via ipify</span>
+        <label class="tgl-switch" aria-label="Request and show public IP through ipify"><input type="checkbox" id="publicIpToggle"><span class="tgl-slider"></span></label>
       </div>
+      <span id="publicIpStatus" class="host-status" aria-live="polite">Public IP lookup is off until you opt in.</span>
       <div class="host-config">
         <label class="tgl-label" for="hudHostInput">Terminal display name</label>
         <div class="host-config-controls">
@@ -54,23 +58,33 @@
         </div>
         <span id="hudHostStatus" class="host-status" aria-live="polite">Shown as a display alias; device name is not detected.</span>
       </div>
+      <p class="privacy-note">Public IP is sent to api.ipify.org only after you opt in; local IP, CPU, RAM, and disk are read only by the optional native helper. ISP and VPN are not queried.</p>
     </div>
 
     <!-- ── DEVELOPER FOOTER ────────────────────────────────── -->
     <footer class="footer">
+      <section class="support-card" aria-labelledby="supportTitle">
+        <h2 id="supportTitle">Love this app?</h2>
+        <p>CyberSecurity Theme is built and maintained by an independent developer. If it brings value to your day, a small tip can support future software projects. Tips are appreciated, never expected. Thank you for your kindness!</p>
+        <a class="support-donate" href="https://www.paypal.com/paypalme/facebookgamer" target="_blank" rel="noopener noreferrer">Tip on PayPal</a>
+        <span class="support-tagline">Support a solo dev · Fund future futuristic tools</span>
+      </section>
       <div class="footer-divider">
         <span class="div-line"></span>
-        <span class="div-text">DEVELOPER LINKS</span>
+        <span class="div-text">SUPPORT THE DEVELOPER</span>
         <span class="div-line"></span>
       </div>
+      <p class="support-line">UNIDENTIFIEDCYBERGHOST / PINOYUNKNOWN</p>
       <div class="dev-links" id="devLinks">
-        <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="dev-link" target="_blank" title="Google Play Store — PinoyUnknown Apps"><span class="dev-icon">🎮</span><span class="dev-name">Play Store</span></a>
-        <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="dev-link" target="_blank" title="Firefox Add-ons — PinoyUnknown"><span class="dev-icon">🦊</span><span class="dev-name">Firefox Addons</span></a>
-        <a href="https://github.com/unidentifiedcyberghost" class="dev-link" target="_blank" title="GitHub — unidentifiedcyberghost"><span class="dev-icon">🐙</span><span class="dev-name">CyberHost</span></a>
-        <a href="https://github.com/pinoyUnknown" class="dev-link" target="_blank" title="GitHub — PinoyUnknown"><span class="dev-icon">🐙</span><span class="dev-name">PinoyUnk</span></a>
-        <a href="https://instagram.com/pinoyunknown" class="dev-link" target="_blank" title="Instagram @pinoyunknown"><span class="dev-icon">📸</span><span class="dev-name">Instagram</span></a>
-        <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="dev-link" target="_blank" title="YouTube — PinoyUnknown"><span class="dev-icon">▶</span><span class="dev-name">YouTube</span></a>
+        <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="dev-link" target="_blank" rel="noopener noreferrer" title="Google Play Store — PinoyUnknown Apps">Play Store</a>
+        <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="dev-link" target="_blank" rel="noopener noreferrer" title="Firefox Add-ons — PinoyUnknown">Firefox Addons</a>
+        <a href="https://github.com/unidentifiedcyberghost" class="dev-link" target="_blank" rel="noopener noreferrer" title="GitHub — unidentifiedcyberghost">CyberGhost</a>
+        <a href="https://github.com/pinoyUnknown" class="dev-link" target="_blank" rel="noopener noreferrer" title="GitHub — PinoyUnknown">PinoyUnknown</a>
+        <a href="https://www.hostinger.com/pricing?REFERRALCODE=DPDCABINCEHM" class="dev-link" target="_blank" rel="noopener noreferrer" title="Hostinger affiliate link">Hostinger (affiliate)</a>
+        <a href="https://instagram.com/pinoyunknown" class="dev-link" target="_blank" rel="noopener noreferrer" title="Instagram @pinoyunknown">Instagram</a>
+        <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="dev-link" target="_blank" rel="noopener noreferrer" title="YouTube — PinoyUnknown">YouTube</a>
       </div>
+      <p class="affiliate-disclosure">Hostinger link is an affiliate link; the developer may earn a commission.</p>
       <p class="copyright">© 2024 PinoyUnknown · unidentifiedcyberghost · v1.0.1</p>
     </footer>
 
