@@ -6,6 +6,7 @@ const api = isFirefox ? browser : chrome;
 const enableButton = document.getElementById('enableLookup');
 const declineButton = document.getElementById('declineLookup');
 const status = document.getElementById('consentStatus');
+let navigationTimer;
 
 function requestIpifyPermission() {
   if (isFirefox) return browser.permissions.request({ origins: [IPIFY_ORIGIN] });
@@ -20,6 +21,7 @@ function requestIpifyPermission() {
 }
 
 async function saveChoice(enabled) {
+  clearTimeout(navigationTimer);
   enableButton.disabled = true;
   declineButton.disabled = true;
 
@@ -37,8 +39,11 @@ async function saveChoice(enabled) {
 
     await api.storage.local.set({ tf_public_ip_lookup_enabled: enabled });
     status.textContent = enabled
-      ? 'Public IP lookup enabled. You can turn it off any time in the extension popup.'
-      : 'Public IP lookup declined. The extension will not request your public IP.';
+      ? 'Public IP lookup enabled. Opening your new tab…'
+      : 'Public IP lookup declined. Opening your new tab…';
+    navigationTimer = setTimeout(() => {
+      window.location.assign(api.runtime.getURL('newtab/newtab.html'));
+    }, 1200);
   } catch (error) {
     console.error('[CyberSecurity Theme] Could not save public IP consent.', error);
     status.textContent = 'Could not save this choice. Please retry or close this tab to keep lookup off.';

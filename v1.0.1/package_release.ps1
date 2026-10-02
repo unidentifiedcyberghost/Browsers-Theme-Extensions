@@ -61,6 +61,12 @@ try {
                 ($null -eq $manifest.background.scripts -or $null -ne $manifest.background.service_worker)) {
                 throw "Firefox package must declare background.scripts and must not declare service_worker: $($package.Path)"
             }
+            if ($package.ManifestVersion -eq 2 -and
+                ($manifest.browser_specific_settings.gecko.strict_min_version -ne '140.0' -or
+                    $manifest.browser_specific_settings.gecko.data_collection_permissions.required -notcontains 'none' -or
+                    $manifest.browser_specific_settings.gecko.data_collection_permissions.optional -notcontains 'locationInfo')) {
+                throw "Firefox package must declare Firefox 140+, no required data collection, and optional locationInfo: $($package.Path)"
+            }
             if ($package.ManifestVersion -eq 3 -and
                 ($null -eq $manifest.background.service_worker -or $null -ne $manifest.background.scripts)) {
                 throw "Chromium package must declare background.service_worker and must not declare background.scripts: $($package.Path)"

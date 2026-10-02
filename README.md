@@ -9,6 +9,8 @@ Adds an original bundled cyber-city wallpaper, an animated Linux terminal/Conky-
 
 Public IP lookup is off until the user opts in and grants the optional `api.ipify.org` host permission. If enabled, that service receives the request IP and returns it for display; it is not sent to the extension developer. The private interface IP is read locally by the optional native helper. ISP and VPN details are not requested. The user can disable public lookup in the popup at any time.
 
+On first install, the privacy page asks whether to enable public-IP lookup. After Allow or Decline is saved, it opens the new tab so the user can continue; if permission or saving fails, the page stays open and reports the problem.
+
 The popup and new-tab footer include an optional PayPal tip link for users who want to support this independently maintained project: [Tip on PayPal](https://www.paypal.com/paypalme/facebookgamer). Tips are appreciated but never expected.
 
 Both support messages thank users and explain that contributions are voluntary: the popup has a “Love this app?” card, and the new-tab footer presents “A Note From the Developer” and its compact message in cyan floating text without a box, paired with a cyan “SHOW YOUR SUPPORT VIA PAYPAL” button. The “Support a solo dev” tagline is slightly larger for readability.
@@ -95,6 +97,10 @@ Brave can load the unpacked folder using `brave://extensions`; it can also use c
 
 **Important:** Select `manifest.json` from the extracted `CyberSecurityTheme-v1.0.1-firefox` package folder. Do not select `v1.0.1/manifest.json`; that is the Chromium Manifest V3 file and uses `background.service_worker`. The Firefox package uses Manifest V2 with `background.scripts`.
 
+The Firefox manifest declares Firefox 140 as its minimum version because AMO requires a non-empty `data_collection_permissions.required` list. It declares required collection as `none`; optional `locationInfo` covers the opt-in public-IP lookup.
+
+The Firefox extension includes a toolbar action for its theme popup. To show it, open Firefox's Extensions (puzzle-piece) menu and pin **CyberSecurity Theme** to the toolbar. This is a browser-toolbar button, not a Windows taskbar shortcut; browser extensions cannot add themselves to the Windows taskbar.
+
 #### Submit to Firefox Add-ons (AMO)
 1. Sign in to the [AMO Developer Hub](https://addons.mozilla.org/developers/) using the account that owns the add-on.
 2. Choose **Submit a New Add-on** and select **On this site** for AMO distribution.
@@ -122,10 +128,10 @@ The extension can display real hostname, CPU%, RAM, and storage via a local Pyth
 
 #### Windows
 ```powershell
-cd v1.0.1/native-host
-.\install_windows.ps1
-# Opens Registry to add Firefox/Chrome native-messaging configuration
+.\v1.0.1\native-host\install_windows.ps1
 ```
+
+This registers the optional helper for the current Windows user (no administrator access is needed). Restart Firefox after installation. If PowerShell blocks the script, run `Set-ExecutionPolicy -Scope Process Bypass` in that PowerShell window and rerun the installer. Until installed, local metrics and the private IP remain unavailable; public-IP lookup is separate and opt-in.
 
 #### Linux / macOS
 ```bash
@@ -133,6 +139,8 @@ cd v1.0.1/native-host
 bash install_unix.sh
 # Writes manifests to ~/.mozilla and ~/.config for native-messaging
 ```
+
+If native metrics fail, the HUD shows an install/error status; hover the affected value for the browser's native-messaging error and install guidance.
 
 ---
 

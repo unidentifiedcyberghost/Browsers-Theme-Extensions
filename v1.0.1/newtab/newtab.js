@@ -501,14 +501,22 @@ async function loadMachineMetrics() {
       setHudHostname(metrics.hostname);
     }
   } catch (error) {
-    console.info('[CyberSecurity Theme] Native metrics unavailable; install the optional local helper to show hostname, RAM, and disk.', error);
-    document.getElementById('machineName').textContent = 'HELPER NOT INSTALLED';
-    document.getElementById('machineOs').textContent = 'HELPER NOT INSTALLED';
+    const reason = error instanceof Error ? error.message : String(error);
+    const helperStatus = /native messaging|native application|native host/i.test(reason)
+      ? 'INSTALL HELPER'
+      : 'HELPER ERROR';
+    const helperInstructions = `${reason} Follow the native helper installation steps in README.md, then restart the browser.`;
+    console.error('[CyberSecurity Theme] Native metrics request failed.', error);
+    document.getElementById('machineName').textContent = helperStatus;
+    document.getElementById('machineOs').textContent = helperStatus;
     document.getElementById('machineCpu').textContent = 'NOT AVAILABLE';
     document.getElementById('machineMemory').textContent = 'NOT AVAILABLE';
     document.getElementById('machineStorage').textContent = 'NOT AVAILABLE';
-    document.getElementById('localIp').textContent = 'HELPER NOT INSTALLED';
-    document.getElementById('globeLocalIp').textContent = 'HELPER REQUIRED';
+    document.getElementById('localIp').textContent = helperStatus;
+    document.getElementById('globeLocalIp').textContent = helperStatus;
+    for (const id of ['machineName', 'machineOs', 'machineCpu', 'machineMemory', 'machineStorage', 'localIp', 'globeLocalIp']) {
+      document.getElementById(id).title = `${helperStatus}: ${helperInstructions}`;
+    }
   }
 }
 loadMachineMetrics();

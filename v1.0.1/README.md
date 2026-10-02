@@ -11,6 +11,8 @@ Firefox AMO upload: `packages/CyberSecurityTheme-v1.0.1-firefox.zip`. If the add
 
 Public IP lookup is off by default. A first-run consent page explains that api.ipify.org sees the request IP, and the user must opt in and grant the optional host permission before the address is displayed. The value is not sent to the extension developer. The optional native helper reads the private interface IP locally. ISP and VPN details are not requested. Public lookup can be disabled in the popup.
 
+After the first-run privacy choice is successfully saved, the consent page opens the new tab. If permission is declined by the browser or the choice cannot be saved, it remains open and displays the status/error.
+
 The popup and new-tab footer thank users for supporting this independent project and offer an optional [PayPal tip](https://www.paypal.com/paypalme/facebookgamer). Support is appreciated but never expected.
 
 In the popup, find the “Love this app?” support card near the bottom. In the new-tab page, “A Note From the Developer” and its smaller explanatory message are cyan floating text without a border or background; “SHOW YOUR SUPPORT VIA PAYPAL” is a cyan button. The “Support a solo dev” tagline uses a slightly larger font. Both messages clearly state that tips are optional.
@@ -70,13 +72,27 @@ The world-clock rail sits high in the right column and shows all 17 locations at
 ### Firefox
 **Temporary testing:** Extract `packages/CyberSecurityTheme-v1.0.1-firefox.zip`, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…**, and select the extracted package's root `manifest.json`. Do not select this source folder's `v1.0.1/manifest.json`: that is the Chromium Manifest V3 file with `background.service_worker`. The Firefox package manifest is v2 and declares `background.scripts`. Firefox removes temporary add-ons on restart.
 
+The Firefox manifest declares Firefox 140 as its minimum version because AMO requires a non-empty `data_collection_permissions.required` list. It declares required collection as `none`; optional `locationInfo` covers only the public-IP lookup after opt-in.
+
+The extension already includes a Firefox toolbar action for theme settings. Open Firefox's Extensions (puzzle-piece) menu and pin **CyberSecurity Theme** to the toolbar. This is a browser-toolbar button, not a Windows taskbar shortcut; browser extensions cannot add themselves to the Windows taskbar.
+
 **AMO submission/update:** Sign in to the [AMO Developer Hub](https://addons.mozilla.org/developers/), choose **Submit a New Add-on** and **On this site** for a new listing, or open the existing listing to submit an update. Upload the Firefox ZIP, pass AMO validation, finish the listing and privacy/data-use questionnaire, and provide source code if AMO requests it. Submit for review and track signing/review status in the Developer Hub. Public distribution starts only after approval.
 
 The Firefox package contains the Firefox manifest as root `manifest.json`. Use the separate Chromium package for Chrome/Edge and other Chromium-based store submissions. Rebuild both archives from the repository root with `.\v1.0.1\package_release.ps1`.
 
-Rebuild both release archives from the repository root with `.\v1.0.1\package_release.ps1`.
-
 > 🦊 **Firefox Add-ons Profile:** [PinoyUnknown on AMO](https://addons.mozilla.org/en-US/firefox/user/20195701/)
+
+### Optional: Install Native Metrics Helper (Windows/Linux/macOS)
+
+The local helper supplies hostname, private IP, CPU, RAM, and disk data to the HUD. Python 3.8+ is required; metrics stay on the device. On Windows, run this from the repository root in PowerShell:
+
+```powershell
+.\v1.0.1\native-host\install_windows.ps1
+```
+
+The installer registers the helper for the current Windows user (no administrator access is needed). Restart Firefox afterward. If PowerShell blocks the script, run `Set-ExecutionPolicy -Scope Process Bypass` in that PowerShell window and rerun the installer. Until installation, local metrics/private IP are unavailable; public-IP lookup is separate and opt-in.
+
+For Linux/macOS, run `bash v1.0.1/native-host/install_unix.sh` from the repository root, then restart the browser. If native metrics fail, hover the affected value in the HUD for the reported native-messaging error and install guidance.
 
 ---
 

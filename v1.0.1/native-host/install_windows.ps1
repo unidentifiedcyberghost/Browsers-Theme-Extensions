@@ -32,7 +32,12 @@ function Write-HostManifest($manifestPath, $allowedOrigins, $allowedExtensions) 
   }
   if ($allowedOrigins) { $manifest.allowed_origins = @($allowedOrigins) }
   if ($allowedExtensions) { $manifest.allowed_extensions = @($allowedExtensions) }
-  $manifest | ConvertTo-Json -Depth 4 | Set-Content -Path $manifestPath -Encoding utf8
+  $manifestJson = $manifest | ConvertTo-Json -Depth 4
+  [System.IO.File]::WriteAllText(
+    $manifestPath,
+    $manifestJson,
+    [System.Text.UTF8Encoding]::new($false)
+  )
 }
 
 $firefoxManifest = Join-Path $installDirectory "firefox-host.json"

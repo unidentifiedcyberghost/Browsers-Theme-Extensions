@@ -45,7 +45,7 @@ write_manifest() {
 import json, os
 m = {"name": os.environ["HOST_NAME"], "description": "Local system metrics for CyberSecurity Theme", "path": os.environ["PYTHON_PATH"], "args": [os.environ["SCRIPT_PATH"]], "type": "stdio"}
 if os.environ["MANIFEST_TYPE"] == "firefox":
-    m["allowed_extensions"] = ["themeforge@pinoyunknown.dev"]
+    m["allowed_extensions"] = ["cybersecurity-theme@pinoyunknown.dev"]
 else:
     m["allowed_origins"] = ["chrome-extension://" + os.environ["BROWSER_ID"] + "/"]
 with open(os.environ["MANIFEST_PATH"], "w", encoding="utf-8") as f:
