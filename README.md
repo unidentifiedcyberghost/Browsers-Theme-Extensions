@@ -1,4 +1,4 @@
-<img width="1365" height="771" alt="version 1 theme blackhat hacker theme selection" src="https://github.com/user-attachments/assets/9bc09783-35a5-463c-997d-23059c39ed78" /># 🔥 CyberSecurity Theme v1.0.1
+# 🔥 CyberSecurity Theme v1.0.1
 
 > **Choose your aesthetic. Forge your browser.**
 > Cross-browser theme extension for Chrome, Firefox, Edge, Brave, and all Chromium browsers.
