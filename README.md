@@ -5,7 +5,7 @@
 
 ## Current release: v1.0.1
 
-Adds an original bundled cyber-city wallpaper, an animated Linux terminal/Conky-style HUD, saved-bookmark shortcuts, live world clocks, a daily USD currency reference ticker, an original animated holographic globe HUD with optional public/private IP readouts, minimal search-engine buttons above the clock, search-result theming, reduced-motion support, and 9 premium themes including the new CyberSecurity Dark theme. Rates are indicative reference data, not live trading data.
+The v1.0.1 update adds 11 distinct animated themes with bundled artwork, a responsive Conky-style new-tab HUD, in-page About/theme controls, synthesized glitch sounds, saved bookmarks and local search history, world clocks, a currency reference ticker, and optional network/system information. Public IP lookup is opt-in; local machine metrics require the separately installed native helper. Exchange rates are daily reference data, not live trading quotes.
 
 Public IP lookup is off until the user opts in and grants the optional `api.ipify.org` host permission. If enabled, that service receives the request IP and returns it for display; it is not sent to the extension developer. The private interface IP is read locally by the optional native helper. ISP and VPN details are not requested. The user can disable public lookup in the popup at any time.
 
@@ -25,7 +25,7 @@ The public Firefox Add-ons profile previously did not show the add-on. Uploading
 
 | Feature | Description |
 |---|---|
-| 🎨 **9 Premium Themes** | Cyberpunk Neon, Blackhat Hacker, Sci-Fi HUD, Glass HUD, Cyberpunk HUD, PinoyUnknown, Dystopian, Pink Candy, CyberSecurity Dark |
+| 🎨 **11 Premium Themes** | Cyberpunk Neon, Blackhat Hacker, Sci-Fi HUD, Glass HUD, Cyberpunk HUD, PinoyUnknown, Dystopian, Pink Candy, CyberSecurity Dark, Glitch, HackTheBox |
 | 🖥️ **New Tab Override** | Fully themed new tab with animated backgrounds, digital clock, daily reference-rate ticker, holographic globe, and search bar |
 | 💉 **Website CSS Injection** | Injects theme CSS variables (scrollbar, selection color) into every website; applies themed styling to Google/Bing/DuckDuckGo/YouTube search results |
 | 🦊 **Firefox Browser Theme** | Dynamically updates Firefox browser UI colors via the theme API |
@@ -40,6 +40,7 @@ The public Firefox Add-ons profile previously did not show the add-on. Uploading
 | 🔐 **Optional Native Helper** | Cross-platform Python daemon for Windows/Linux/macOS; reports real device hostname, CPU, RAM, disk usage without external API calls (privacy-first) |
 | 📱 **Cross-Browser** | Chrome MV3, Firefox MV2, Edge, Brave |
 | ♿ **Accessibility** | Reduced-motion support; proper ARIA labels; keyboard-navigable popup and search controls |
+| 🔊 **Glitch Sound Effects** | Short synthesized sounds for typing, interface clicks, and searches; enabled by default and configurable in About → Preferences |
 
 The search-engine selector is positioned above the central clock. The right rail contains the live world clocks and separate Microsoft Rewards and Hostinger referral links; “Earn Rewards” is also available in the footer.
 
@@ -47,13 +48,15 @@ The world-clock rail is placed near the top of the right column. It shows all 17
 
 The center greeting, search-engine selector, and search input appear before the main clock panel. The center clock is intentionally compact, and the search field has a brighter accent border, background, and focus state so users can find it quickly.
 
-The small gear in the new-tab top bar expands/collapses an inline HUD theme selector. Selecting a theme saves it for future tabs and updates the new-tab HUD, website styling, and Firefox browser colors. The search-results terminal banner is decorative; it does not scan or certify the destination site's security.
+The small gear in the new-tab top bar expands/collapses an inline HUD theme selector. The About dialog also embeds the popup, including its SELECT THEME cards and preferences. Selecting a theme saves it across sessions and applies it to the new-tab HUD, website styling, and Firefox browser colors; open extension pages synchronize from the saved theme. The search-results terminal banner is decorative; it does not scan or certify the destination site's security.
 
-The compact machine panel reports browser network online/offline and connection type when available, plus optional native-helper CPU, RAM, OS, local IP, disk capacity, and uptime. Disk used/free is shown directly, with total capacity available on hover. Uptime and detailed disk data require the updated optional helper; older helper installations should be updated by rerunning its installer.
+Each of the eleven themes has its own bundled background artwork and motion treatment. Pink Candy uses a light pastel background with darker text and accents for readability. Glitch adds multicolor cyberpunk interference and HackTheBox uses an original green cyber-lab aesthetic. Saved Bookmarks and Search History are keyboard-accessible expandable panels; only submitted searches are stored locally on this device, up to eight recent terms, and users can clear the history. At narrow/zoomed viewport sizes, side panels stack into a scrollable layout to avoid covering one another. Search-result terminal notices fade away after three seconds. The optional glitch sound effects are generated locally by Web Audio (no audio files or network requests) and can be turned off in About → Preferences.
+
+The collapsible machine panel reports browser network online/offline and connection type when available, plus optional native-helper CPU, RAM, OS, local IP, disk capacity, and uptime. It starts expanded; use its heading to collapse or reopen it. Disk used/free is shown directly, with total capacity available on hover. Uptime and detailed disk data require the updated optional helper; older helper installations should be updated by rerunning its installer.
 
 ---
 
-## 🎨 Themes (9 Total)
+## 🎨 Themes (11 Total)
 
 | # | Theme | Style | Vibe | Icon |
 |---|---|---|---|---|
@@ -64,8 +67,10 @@ The compact machine panel reports browser network online/offline and connection 
 | 5 | ⬡ **Cyberpunk HUD** | Orange, Yellow, Red | Night City, dystopian neon | ⬡ |
 | 6 | ◉ **PinoyUnknown** | Hot Pink, Neon Green, Purple | Filipino brand identity | ◉ |
 | 7 | ☢ **Dystopian** | Dark Red, Gray | Post-apocalyptic, grim survival | ☢ |
-| 8 | ♡ **Pink Candy** | Pink, White | Soft, kawaii, sweet aesthetic | ♡ |
+| 8 | ♡ **Pink Candy** | Light Pink, White, Dark Berry | Soft, kawaii, higher-contrast text | ♡ |
 | 9 | 🔐 **CyberSecurity Dark** | Neon Green, Navy | Fortress, secure hacker aesthetic | 🔐 |
+| 10 | ▧ **Glitch** | Magenta, Cyan, Red, Green, Yellow, Orange, Purple | Multicolor cyberpunk interference | ▧ |
+| 11 | ⬢ **HackTheBox** | Lime Green, Black, White | Original cyber-lab terminal aesthetic | ⬢ |
 
 ---
 
@@ -173,6 +178,7 @@ Browser-Theme-Extensions/
 |---|---|
 | 🎮 Google Play Store | [PinoyUnknown Apps](https://play.google.com/store/apps/dev?id=7374638355121114347) |
 | 🦊 Firefox Add-ons | [PinoyUnknown on AMO](https://addons.mozilla.org/en-US/firefox/user/20195701/) |
+| 𝕏 WhiteHatDev | [@TeamWhiteHatDev](https://x.com/TeamWhiteHatDev) |
 | 🐙 GitHub (CyberGhost) | [unidentifiedcyberghost](https://github.com/unidentifiedcyberghost) |
 | 🐙 GitHub (Brand) | [pinoyUnknown](https://github.com/pinoyUnknown) |
 | 📸 Instagram | [@pinoyunknown](https://instagram.com/pinoyunknown) |
@@ -186,47 +192,50 @@ Browser-Theme-Extensions/
 
 ---
 
-#### `v1.0.1` — CyberSecurity Theme (Complete Edition)
-**Release Date:** 2024
+#### `v1.0.1` — CyberSecurity Theme (feature and compatibility updates)
+**Release:** 2024; maintained as the current v1.0.1 line.
 
-##### HUD and Metrics Updates
-- Added a collapsible top-bar gear selector for all nine themes; selections persist and update the new-tab HUD, themed websites, and Firefox browser colors.
-- Updated the search-results HUD prompt and added a decorative “secured and safe...” line; it does not scan or certify site security.
-- Reduced machine-panel spacing and added helper-reported uptime, visible disk used/free capacity, and total capacity in the value tooltip.
-- Increased the world-clock country, time, and date text for readability.
+This release grew through the following updates. Together they describe the changes in the current `v1.0.1/` source and packages.
 
-##### ✨ New Features
-- Added **9th theme**: 🔐 CyberSecurity Dark (Neon Green + Navy)
-- **Currency Reference Ticker**: Displays every valid currency in the selected public USD reference-rate response, with its upstream timestamp and a clear daily-reference/not-live-trading label; refreshes when the provider's next update is due
-- **Holographic Globe HUD**: Added original wireframe globe artwork with theme-colored orbit rings, meridians, and scan sweep in the upper-left background; honors reduced-motion settings
-- **IP Address HUD**: Public IP display requires first-run consent plus optional ipify host permission; private interface IP is read only by the local native helper. ISP/VPN data is not requested.
-- **Referral Links**: Added the Bing Rewards referral next to the Bing search selector and a clearly disclosed Hostinger affiliate link in developer links.
-- **Search Engine Buttons**: Replaced large icon buttons with small, minimal G/B/D/YT labels while retaining accessible names and selected-state styling
-- **Developer Footer**: Added the developer support line and changed the CyberGhost and PinoyUnknown links to icon-free labels
-- **Search Result Theming**: Applied theme CSS injection to Google, Bing, DuckDuckGo, and YouTube search results; maintains theme colors, borders, and accent styling across search result cards
-- **Machine Metrics Panel**: Left-aligned below navbar; displays:
-  - Machine hostname
-  - Real-time CPU usage
-  - RAM usage
-  - Storage / home disk
-  - OS type
-  - Network status
-  - Connection type
-  - All via optional native helper (Python daemon)
-- **Optional Cross-Platform Native Helper**:
-  - Windows: PowerShell installer writing to registry (HKCU)
-  - Linux/macOS: Bash installer writing to ~/.mozilla and ~/.config
-  - Supports native-messaging protocol for secure IPC with extension
-  - No external API calls; all metrics computed locally
-- **Extended Terminal HUD**: Terminal header now shows real machine hostname (editable in popup with storage persistence)
-- **Theme Color Updates**: Refreshed all 8 existing themes + new 9th theme to use new visual features
+##### 1. New themes and visual design
+- Expanded the original eight-theme set to eleven: added **CyberSecurity Dark**, **Glitch**, and **HackTheBox**.
+- Made Pink Candy a lighter pastel theme with darker, higher-contrast text and accents.
+- Created and bundled a distinct original SVG background for every theme.
+- Added theme-specific canvas animation treatments, including multicolor Glitch interference and a green HackTheBox-inspired cyber-lab network.
+- Preserved per-theme accent colors across the new-tab HUD, website styling, popup previews, and Firefox browser chrome where the Firefox theme API is available.
 
-##### 🎨 Updated Features
-- Renamed extension to **"CyberSecurity Theme v1.0.1"** across all manifests
-- Updated Extension ID from `themeforge@pinoyunknown.dev` → `cybersecurity-theme@pinoyunknown.dev`
-- Enhanced new-tab layout: topbar → currency ticker → network panel → main content (clock, planet globe, bookmarks, search)
-- Improved content.js to inject search-result styling with !important overrides for persistency
-- Added the currency-provider permission (`https://open.er-api.com/*`) to both browser manifests
+##### 2. Main interface, layout, and controls
+- Built a responsive, Conky-inspired new-tab interface with a live digital clock/date, greeting, terminal prompt, animated background, and theme-colored HUD.
+- Placed the search engine selector and input before the clock; retained Google, Bing, DuckDuckGo, and YouTube search targets.
+- Added an expandable settings gear and an **ABOUT** dialog. The About view embeds the existing popup, so users can select any theme and access preferences without leaving the interface.
+- Made theme selection persist in extension storage and update the open new-tab interface, themed websites, and Firefox browser colors. Popup cards also follow saved-theme changes.
+- Made Saved Bookmarks and Search History collapsible. Search history stores only submitted terms locally (up to eight recent searches), supports resubmission, and includes a clear-history control.
+- Added responsive breakpoints so the side panels stack and the page can scroll at narrow, short, or zoomed viewport sizes rather than overlap.
+- Made the machine/network status panel collapsible and more compact; added browser online/offline and connection-type information where supported.
+
+##### 3. Search HUD and interface sound
+- Added a small website HUD with the CyberSecurity terminal prompt and search text, then fade/remove it after three seconds.
+- Added “secured and safe...” and “Connection Secured...” decorative lines. These are visual flavor only: the extension does not inspect or certify website safety.
+- Added locally synthesized glitch-style audio for typing in extension interface fields, clicking interface controls, and submitting searches. It uses Web Audio without remote audio files or sound requests; it is enabled by default and can be switched off in **ABOUT → Preferences**.
+
+##### 4. Clocks, network, and machine information
+- Added the world-clock rail for the requested locations, with readable country labels, time, and date, positioned in the right column without an internal scrollbar.
+- Added an original holographic globe, orbit rings, meridians, and scan treatment.
+- Added a daily USD currency reference ticker with the provider’s update timestamp. Rates are not live trading quotes.
+- Added optional public-IP lookup via ipify, off until the user opts in and grants the optional host permission. The request IP is sent to ipify; ISP and VPN details are not queried.
+- Kept private IP, hostname, CPU, RAM, OS, disk capacity/use, and uptime local to the optional native helper. These machine values require the helper to be installed separately and are not available from the extension alone.
+- Added Windows and Unix-like native-helper installers and documented how to update/reinstall the helper for newer metrics.
+
+##### 5. Links, support, and documentation
+- Added separate Microsoft Rewards and Hostinger referral links, with an affiliate disclosure for Hostinger; kept **Earn Rewards** available in the footer.
+- Added the developer support note and optional PayPal button to the new-tab and popup interfaces. Tips are described as voluntary.
+- Added the WhiteHatDev profile to the developer links.
+- Expanded installation and store-submission instructions for Firefox AMO and Chromium-based browsers, including the difference between temporary testing and publishing.
+
+##### 6. Firefox and release-package fixes
+- Built separate Firefox Manifest V2 and Chromium Manifest V3 ZIPs. The Firefox archive places the Firefox manifest at the ZIP root and uses `background.scripts`; do not load the Chromium service-worker manifest in Firefox.
+- Declared Firefox’s “no required data collection” value and the optional public-IP permission in the Firefox manifest. The current Firefox manifest’s minimum version is 140 because of AMO’s data-collection manifest requirements.
+- Added a release script that builds both archives and verifies versioned root manifests, the correct browser-specific background fields, and the required theme artwork and sound script.
 
 ---
 

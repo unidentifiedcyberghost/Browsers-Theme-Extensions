@@ -9,6 +9,8 @@ const HUD_ID = 'tf-cyber-hud';
 const _rt = (typeof browser !== 'undefined') ? browser.runtime : chrome.runtime;
 let hudHostname = 'PinoyUnknown';
 let hudRoot;
+let searchHudExpiresAt = 0;
+let searchHudRemovalTimer = 0;
 
 // Inject CSS variables into the page :root
 function injectTheme(theme) {
@@ -76,11 +78,27 @@ function renderSiteHud(theme) {
     ? (searchParams.get('q') || searchParams.get('search_query') || '')
     : '';
   const terminalLine = searchText
-    ? "search '" + searchText.slice(0, 120) + "'"
+    ? 'search "' + searchText.slice(0, 120) + '"'
     : 'view ' + pageHost;
   const accent = theme.vars['--tf-accent'];
   const accent2 = theme.vars['--tf-accent2'];
-  const wallpaperUrl = _rt.getURL('assets/cyber-city.svg');
+  const wallpaperUrl = _rt.getURL(theme.wallpaper || 'assets/cyber-city.svg');
+  if (searchText) {
+    if (!searchHudExpiresAt) searchHudExpiresAt = Date.now() + 3000;
+    const remaining = searchHudExpiresAt - Date.now();
+    if (remaining <= 0) {
+      clearTimeout(searchHudRemovalTimer);
+      document.getElementById(HUD_ID)?.remove();
+      return;
+    }
+    clearTimeout(searchHudRemovalTimer);
+    searchHudRemovalTimer = setTimeout(() => {
+      document.getElementById(HUD_ID)?.remove();
+    }, remaining);
+  } else {
+    searchHudExpiresAt = 0;
+    clearTimeout(searchHudRemovalTimer);
+  }
   hudRoot.innerHTML = `
     <style>
       :host { all:initial; position:fixed; inset:0; z-index:2147483647; display:block; pointer-events:none; }
@@ -98,6 +116,10 @@ function renderSiteHud(theme) {
         letter-spacing:.35px; backdrop-filter:blur(8px);
         animation:terminal-glow 3.4s ease-in-out infinite;
       }
+      .terminal.search-terminal {
+        opacity:${searchText ? Math.max(0, (searchHudExpiresAt - Date.now()) / 3000) : 1};
+        transition:opacity ${searchText ? Math.max(0, searchHudExpiresAt - Date.now()) : 0}ms linear;
+      }
       .status { display:flex; justify-content:space-between; gap:12px; color:${accent2}; font-size:9px; }
       .prompt { color:${accent}; }
       .page { width:0; max-width:calc(100vw - 48px); overflow:hidden; white-space:nowrap; }
@@ -113,7 +135,13 @@ function renderSiteHud(theme) {
       <div class="status"><span>ACCESS MODE // HUD CYBERSECURITY THEME -</span><span>SESSION ACTIVE</span></div>
       <div class="page"><span class="prompt">root@CyberSecurity:~$</span> ${escapeText(terminalLine)}<span class="cursor"></span></div>
       ${searchText ? '<div class="secure">root@CyberSecurity:~$ secured and safe...</div>' : ''}
+      ${searchText ? '<div class="secure">root@CyberSecurity:~$ Connection Secured...</div>' : ''}
     </div>`;
+  if (searchText) {
+    const terminal = hudRoot.querySelector('.terminal');
+    terminal.classList.add('search-terminal');
+    requestAnimationFrame(() => { terminal.style.opacity = '0'; });
+  }
   const command = hudRoot.querySelector('.page');
   const targetWidth = command.scrollWidth;
   command.style.transition = `width ${Math.min(1800, Math.max(350, targetWidth * 12))}ms steps(${Math.max(1, terminalLine.length)},end)`;

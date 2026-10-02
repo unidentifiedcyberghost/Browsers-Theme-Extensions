@@ -71,9 +71,31 @@ try {
                 ($null -eq $manifest.background.service_worker -or $null -ne $manifest.background.scripts)) {
                 throw "Chromium package must declare background.service_worker and must not declare background.scripts: $($package.Path)"
             }
-            foreach ($requiredEntry in @('newtab/newtab.html', 'popup/popup.html', 'background/background.js')) {
+            foreach ($requiredEntry in @(
+                'newtab/newtab.html',
+                'popup/popup.html',
+                'background/background.js',
+                'shared/glitch-sounds.js'
+            )) {
                 if ($null -eq $zip.GetEntry($requiredEntry)) {
                     throw "Package is missing $requiredEntry : $($package.Path)"
+                }
+            }
+            foreach ($wallpaper in @(
+                'wallpaper-cyberpunk-neon.svg',
+                'wallpaper-blackhat-hacker.svg',
+                'wallpaper-scifi-hud.svg',
+                'wallpaper-glass-hud.svg',
+                'wallpaper-cyberpunk-hud.svg',
+                'wallpaper-pinoyunknown.svg',
+                'wallpaper-dystopian.svg',
+                'wallpaper-candy-pink.svg',
+                'wallpaper-cybersecurity-dark.svg',
+                'wallpaper-glitch.svg',
+                'wallpaper-hackthebox.svg'
+            )) {
+                if ($null -eq $zip.GetEntry("assets/$wallpaper")) {
+                    throw "Package is missing theme wallpaper assets/$wallpaper : $($package.Path)"
                 }
             }
         } finally {

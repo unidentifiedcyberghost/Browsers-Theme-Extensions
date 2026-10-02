@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CyberSecurity Theme v1.0.1",
   "version": "1.0.1",
-  "description": "9 animated browser themes with a Conky-inspired HUD, world clocks, saved bookmarks, and opt-in public IP lookup. By PinoyUnknown.",
+  "description": "11 animated browser themes with a Conky-inspired HUD, glitch sound effects, world clocks, bookmarks, and opt-in public IP lookup. By PinoyUnknown.",
   "author": "PinoyUnknown | unidentifiedcyberghost",
   "icons": {
     "16": "icons/icon16.png",

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#100718"/><stop offset=".55" stop-color="#1e0c29"/><stop offset="1" stop-color="#071b27"/></linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#20f6ef" stroke-opacity=".16"/>
+      <path d="M32 0v64M0 32h64" stroke="#ff32a6" stroke-opacity=".07"/>
+    </pattern>
+    <linearGradient id="scan" x2="0" y2="1"><stop stop-color="#20f6ef" stop-opacity="0"/><stop offset=".5" stop-color="#20f6ef" stop-opacity=".18"/><stop offset="1" stop-color="#20f6ef" stop-opacity="0"/></linearGradient>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h1200v800H0z"/>
+  <path fill="url(#grid)" d="M0 0h1200v800H0z"/>
+  <g fill="none" stroke-width="3" opacity=".7">
+    <path stroke="#ff32a6" d="M90 210h310l34 34h160M760 126h250v96h92"/>
+    <path stroke="#20f6ef" d="M0 560h250l42-42h210m300 168h210l38-38h150"/>
+  </g>
+  <g fill="#ff32a6"><rect x="180" y="205" width="120" height="5"/><rect x="855" y="438" width="210" height="4"/></g>
+  <g fill="#20f6ef"><rect x="435" y="242" width="96" height="5"/><rect x="190" y="557" width="166" height="4"/></g>
+  <g fill="#b5ff38" opacity=".7"><circle cx="90" cy="210" r="5"/><circle cx="1010" cy="126" r="5"/><circle cx="250" cy="560" r="5"/><circle cx="1012" cy="686" r="5"/></g>
+  <path fill="url(#scan)" d="M0 0h1200v800H0z"/>
+</svg>

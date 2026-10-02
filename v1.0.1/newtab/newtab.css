@@ -34,17 +34,52 @@ body {
 /* Bundled artwork keeps the new-tab backdrop available offline. */
 .wallpaper {
   position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
+  background-image:
     linear-gradient(180deg,rgba(var(--ac-rgb),0.08),rgba(0,0,0,0.12) 48%,var(--bg) 100%),
-    url('../assets/cyber-city.svg') center 54% / cover no-repeat;
+    var(--theme-wallpaper,url('../assets/cyber-city.svg'));
+  background-position:center,center 54%;
+  background-size:cover,cover;
+  background-repeat:no-repeat;
   opacity:0.78;
   transform:scale(1.025);
-  animation:wallpaper-drift 38s ease-in-out infinite alternate;
+  animation:var(--theme-wallpaper-animation,wallpaper-drift 38s ease-in-out infinite alternate);
   transition:filter .7s ease, opacity .7s ease;
 }
+body[data-theme="cyberpunk-neon"] { --theme-wallpaper:url('../assets/wallpaper-cyberpunk-neon.svg'); --theme-wallpaper-animation:wallpaper-drift 38s ease-in-out infinite alternate; }
+body[data-theme="blackhat-hacker"] { --theme-wallpaper:url('../assets/wallpaper-blackhat-hacker.svg'); --theme-wallpaper-animation:wallpaper-scan 24s linear infinite alternate; }
+body[data-theme="scifi-hud"] { --theme-wallpaper:url('../assets/wallpaper-scifi-hud.svg'); --theme-wallpaper-animation:wallpaper-zoom 30s ease-in-out infinite alternate; }
+body[data-theme="glass-hud"] { --theme-wallpaper:url('../assets/wallpaper-glass-hud.svg'); --theme-wallpaper-animation:wallpaper-float 34s ease-in-out infinite alternate; }
+body[data-theme="cyberpunk-hud"] { --theme-wallpaper:url('../assets/wallpaper-cyberpunk-hud.svg'); --theme-wallpaper-animation:wallpaper-pan 28s ease-in-out infinite alternate; }
+body[data-theme="pinoyunknown"] { --theme-wallpaper:url('../assets/wallpaper-pinoyunknown.svg'); --theme-wallpaper-animation:wallpaper-orbit 42s linear infinite; }
+body[data-theme="dystopian"] { --theme-wallpaper:url('../assets/wallpaper-dystopian.svg'); --theme-wallpaper-animation:wallpaper-flicker 8s steps(2,end) infinite; }
+body[data-theme="candy-pink"] { --theme-wallpaper:url('../assets/wallpaper-candy-pink.svg'); --theme-wallpaper-animation:wallpaper-candy-bob 26s ease-in-out infinite alternate; }
+body[data-theme="cybersecurity-dark"] { --theme-wallpaper:url('../assets/wallpaper-cybersecurity-dark.svg'); --theme-wallpaper-animation:wallpaper-grid 32s linear infinite; }
+body[data-theme="glitch"] { --theme-wallpaper:url('../assets/wallpaper-glitch.svg'); --theme-wallpaper-animation:wallpaper-glitch 12s steps(1,end) infinite; }
+body[data-theme="hackthebox"] { --theme-wallpaper:url('../assets/wallpaper-hackthebox.svg'); --theme-wallpaper-animation:wallpaper-htb-scan 22s linear infinite; }
 @keyframes wallpaper-drift {
   from { transform:scale(1.025) translate3d(-.4%,0,0); }
   to { transform:scale(1.075) translate3d(.4%,-.4%,0); }
+}
+@keyframes wallpaper-scan { from { background-position:center,center 20%; } to { background-position:center,center 80%; } }
+@keyframes wallpaper-zoom { from { transform:scale(1.02); } to { transform:scale(1.11); } }
+@keyframes wallpaper-float { from { transform:scale(1.04) translateY(-.5%); } to { transform:scale(1.08) translateY(.5%); } }
+@keyframes wallpaper-pan { from { background-position:center,45% 54%; } to { background-position:center,55% 46%; } }
+@keyframes wallpaper-orbit { from { transform:scale(1.04) rotate(-.4deg); } to { transform:scale(1.08) rotate(.4deg); } }
+@keyframes wallpaper-flicker { 0%,100% { opacity:.72; } 50% { opacity:.62; } }
+@keyframes wallpaper-grid { from { background-position:center,center; } to { background-position:center,20px 20px; } }
+@keyframes wallpaper-candy-bob {
+  from { transform:scale(1.025) translate3d(0,-.5%,0); }
+  to { transform:scale(1.07) translate3d(0,.5%,0); }
+}
+@keyframes wallpaper-glitch {
+  0%,88%,100% { transform:scale(1.025) translateX(0); filter:none; }
+  89% { transform:scale(1.035) translateX(.35%); filter:hue-rotate(18deg); }
+  90% { transform:scale(1.025) translateX(-.3%); filter:hue-rotate(-14deg); }
+  91% { transform:scale(1.025) translateX(0); filter:none; }
+}
+@keyframes wallpaper-htb-scan {
+  from { background-position:center,center 0; }
+  to { background-position:center,center 96px; }
 }
 
 /* ── BG CANVAS ───────────────────────────────────────── */
@@ -75,11 +110,44 @@ body {
   backdrop-filter:blur(10px);
 }
 .topbar-left { display:flex; align-items:center; gap:8px; }
-.topbar-right { display:flex; align-items:flex-start; justify-content:flex-end; gap:14px; }
+.topbar-right {
+  display:grid; grid-template-columns:auto 24px; grid-template-rows:auto auto;
+  align-items:center; justify-items:end; gap:4px 8px;
+}
+.tb-tag { grid-column:1 / 3; grid-row:1; }
 .theme-settings { position:relative; }
+.topbar-right > .theme-settings { grid-column:2; grid-row:2; }
+.about-toggle { grid-column:1; grid-row:2; }
+.about-toggle {
+  min-height:28px; padding:4px 9px;
+  border:1px solid var(--border); border-radius:5px;
+  color:var(--ac); background:rgba(var(--ac-rgb),.07);
+  font:8px 'Ubuntu Mono',monospace; letter-spacing:1px; cursor:pointer;
+}
+.about-toggle:hover,.about-toggle:focus-visible {
+  border-color:var(--ac); background:rgba(var(--ac-rgb),.18); outline:none;
+}
+.about-dialog {
+  width:min(440px,calc(100vw - 24px)); height:min(720px,calc(100vh - 24px));
+  max-width:none; max-height:none; padding:0; overflow:hidden;
+  border:1px solid rgba(var(--ac-rgb),.46); border-radius:10px;
+  color:var(--text); background:#06060f; box-shadow:0 20px 70px rgba(0,0,0,.7);
+}
+.about-dialog::backdrop { background:rgba(0,0,0,.72); backdrop-filter:blur(4px); }
+.about-dialog-header {
+  height:38px; display:flex; justify-content:space-between; align-items:center;
+  padding:0 10px; color:var(--ac); background:#080b16;
+  border-bottom:1px solid var(--border); font:9px 'Ubuntu Mono',monospace;
+}
+.about-close {
+  width:26px; height:26px; border:0; border-radius:4px;
+  color:var(--ac); background:transparent; font-size:22px; cursor:pointer;
+}
+.about-close:hover,.about-close:focus-visible { background:rgba(var(--ac-rgb),.15); outline:1px solid var(--ac); }
+.about-frame { display:block; width:100%; height:calc(100% - 38px); border:0; background:#06060f; }
 .theme-settings-toggle {
-  width:30px; height:30px; display:grid; place-items:center;
-  border:1px solid var(--border); border-radius:7px;
+  width:24px; height:24px; display:grid; place-items:center;
+  border:1px solid var(--border); border-radius:6px;
   color:var(--ac); background:rgba(var(--ac-rgb),.08);
   cursor:pointer; transition:background .2s,border-color .2s,transform .2s;
 }
@@ -87,7 +155,7 @@ body {
   border-color:var(--ac); background:rgba(var(--ac-rgb),.18); transform:rotate(12deg);
 }
 .theme-settings-toggle:focus-visible { outline:2px solid var(--ac); outline-offset:2px; }
-.theme-settings-toggle svg { width:17px; height:17px; fill:currentColor; }
+.theme-settings-toggle svg { width:14px; height:14px; fill:currentColor; }
 .theme-settings-panel {
   position:absolute; z-index:20; top:calc(100% + 9px); right:0;
   width:min(350px,calc(100vw - 24px)); padding:10px;
@@ -141,10 +209,17 @@ body {
 }
 .network-heading {
   display:flex; justify-content:space-between; align-items:center; gap:10px;
-  padding-bottom:4px;
+  padding-bottom:4px; list-style:none; cursor:pointer;
   color:var(--ac); font-size:8px; letter-spacing:.7px;
   border-bottom:1px solid rgba(var(--ac-rgb),0.2);
 }
+.network-heading::-webkit-details-marker { display:none; }
+.network-heading::after {
+  content:'+'; flex:0 0 auto; color:var(--ac); font-size:12px; line-height:1;
+}
+.network-panel[open] .network-heading::after { content:'−'; }
+.network-heading:focus-visible { outline:1px solid var(--ac); outline-offset:3px; }
+.network-panel:not([open]) .network-heading { padding-bottom:0; border-bottom:0; }
 #networkPrivacy { color:var(--text2); text-align:right; white-space:nowrap; font-size:7px; }
 .network-stats { display:grid; grid-template-columns:1fr 1fr; gap:2px 10px; padding-top:5px; }
 .network-stat { display:flex; align-items:center; justify-content:space-between; gap:6px; min-width:0; }
@@ -452,9 +527,9 @@ body {
 
 /* Browser-saved links stay in a compact vertical rail on the left. */
 .bookmarks-panel {
-  align-self:end; width:100%; max-height:min(38vh,360px); min-height:0;
+  align-self:end; width:100%; max-height:min(48vh,420px); min-height:0;
   display:flex; flex-direction:column;
-  padding:11px 9px;
+  gap:0; padding:5px 8px;
   border:1px solid rgba(var(--ac-rgb),0.24);
   border-radius:9px;
   background:rgba(5,9,22,0.58);
@@ -462,20 +537,39 @@ body {
   backdrop-filter:blur(12px);
   animation:hud-enter .65s .16s cubic-bezier(.2,.75,.25,1) both;
 }
+.rail-accordion { min-width:0; }
+.rail-accordion + .rail-accordion { border-top:1px solid rgba(var(--ac-rgb),.16); }
 .bookmarks-heading {
-  display:flex; flex-direction:column; align-items:flex-start; gap:4px;
-  margin:0 0 8px; padding:0 3px 7px;
+  display:flex; flex-direction:row; justify-content:space-between; align-items:center; gap:8px;
+  margin:0; padding:7px 3px;
   border-bottom:1px solid rgba(var(--ac-rgb),0.18);
   font-family:'Ubuntu Mono',monospace; font-size:9px; letter-spacing:1.5px;
+  cursor:pointer; list-style:none;
 }
+.bookmarks-heading::-webkit-details-marker { display:none; }
+.bookmarks-heading::after { content:'+'; color:var(--ac); font-size:12px; }
+.rail-accordion[open] > .bookmarks-heading::after { content:'−'; }
 .bookmarks-title { color:var(--ac); }
-.bookmarks-hint { color:var(--text2); font-size:8px; }
+.bookmarks-hint { margin-left:auto; color:var(--text2); font-size:8px; }
 .bookmarks-list {
   display:flex; flex-direction:column; gap:5px; align-items:stretch;
-  min-height:0; overflow-x:hidden; overflow-y:auto;
+  max-height:min(27vh,250px); min-height:0; overflow-x:hidden; overflow-y:auto;
   scrollbar-width:thin; scrollbar-color:rgba(var(--ac-rgb),0.4) transparent;
-  padding:0 2px 2px 0;
+  padding:6px 2px 2px 0;
 }
+.search-history-list { display:flex; flex-direction:column; gap:4px; max-height:min(22vh,180px); overflow-y:auto; padding:6px 2px 2px 0; }
+.history-item {
+  width:100%; overflow:hidden; padding:6px 7px; border:1px solid rgba(var(--ac-rgb),.13);
+  border-radius:4px; color:var(--text); background:rgba(var(--ac-rgb),.035);
+  font:9px 'Ubuntu Mono',monospace; text-align:left; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;
+}
+.history-item:hover,.history-item:focus-visible { border-color:var(--ac); color:var(--ac); outline:none; }
+.history-clear {
+  display:block; margin:5px 0 3px auto; padding:4px 7px;
+  border:1px solid rgba(var(--ac-rgb),.18); border-radius:4px;
+  color:var(--text2); background:transparent; font:7px 'Ubuntu Mono',monospace; cursor:pointer;
+}
+.history-clear:hover,.history-clear:focus-visible { color:var(--ac); border-color:var(--ac); outline:none; }
 .bookmark-link {
   min-width:0; max-width:none; flex:0 0 auto;
   display:flex; align-items:center; gap:7px;
@@ -614,24 +708,33 @@ body {
   text-align:center;
 }
 
-@media (max-width: 640px) {
-  .topbar { padding:8px 12px; flex-wrap:wrap; gap:8px; }
-  .topbar-right { align-items:center; gap:8px; }
-  .network-panel { width:calc(100% - 24px); margin:7px 12px 0; padding:6px 8px; }
-  .tb-tag { max-width:100px; font-size:7px; letter-spacing:.2px; text-align:right; }
-  #networkPrivacy { max-width:52%; overflow:hidden; text-overflow:ellipsis; }
-  .theme-settings-panel { right:-4px; }
+@media (max-width: 1000px), (max-height: 720px) {
+  .planet-orbit { display:none; }
+  .topbar { padding:8px 12px; }
+  .network-panel { width:calc(100% - 24px); margin:7px 12px 0; }
   .main-layout {
     grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto minmax(380px,1fr) auto;
-    align-items:stretch; gap:10px; padding:10px 12px;
+    grid-template-rows:auto minmax(360px,auto) auto;
+    align-items:stretch; align-content:start; gap:10px; padding:10px 12px;
     overflow-y:auto;
   }
-  .main-center { gap:14px; }
+  .bookmarks-panel { align-self:stretch; max-height:none; }
+  .bookmarks-list { max-height:24vh; }
   .right-rail { max-height:none; margin-top:0; }
   .world-clocks { max-height:none; }
   .world-clock-list { grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:8px; }
   .referral-panel { margin-top:0; }
+  .main-center { gap:14px; }
+}
+
+@media (max-width: 640px) {
+  .topbar { padding:8px 12px; flex-wrap:wrap; gap:8px; }
+  .network-panel { width:calc(100% - 24px); margin:7px 12px 0; padding:6px 8px; }
+  .topbar-right { grid-template-columns:auto auto; grid-template-rows:auto auto; gap:3px 6px; }
+  .tb-tag { max-width:190px; font-size:7px; letter-spacing:.2px; text-align:right; }
+  #networkPrivacy { max-width:52%; overflow:hidden; text-overflow:ellipsis; }
+  .theme-settings-panel { right:-4px; }
+  .about-dialog { width:calc(100vw - 16px); height:calc(100vh - 16px); }
   .clock { font-size:clamp(38px,11vw,58px); letter-spacing:1px; }
   .date { font-size:10px; letter-spacing:1px; }
   .dev-footer { padding:8px 12px; }
@@ -643,8 +746,7 @@ body {
   .hud-heading { font-size:8px; letter-spacing:1px; }
   .hud-footer { flex-wrap:wrap; font-size:7px; }
   .terminal-caption { font-size:8px; }
-  .bookmarks-panel { align-self:stretch; max-height:20vh; padding:7px; }
-  .bookmarks-list { max-height:13vh; }
+  .bookmarks-panel { padding:5px 7px; }
   .network-heading { font-size:7px; letter-spacing:.3px; }
   .network-stats { gap:2px 7px; }
   .network-stat { gap:3px; }
@@ -652,10 +754,6 @@ body {
 }
 
 @media (min-width:641px) and (max-width:1000px) {
-  .main-layout {
-    grid-template-columns:minmax(125px,155px) minmax(0,1fr) minmax(140px,165px);
-    gap:12px; padding:14px 18px;
-  }
   .world-clock-city { font-size:9px; }
   .world-clock-time { font-size:9px; }
   .world-clock-date { font-size:7px; }

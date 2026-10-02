@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#020905"/><stop offset="1" stop-color="#000"/></linearGradient><pattern id="p" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h64v64H0z" fill="none" stroke="#00ff41" stroke-opacity=".14"/><path d="M32 0v64M0 32h64" stroke="#00ff41" stroke-opacity=".1"/></pattern></defs>
+  <path fill="url(#g)" d="M0 0h1200v800H0z"/><path fill="url(#p)" d="M0 0h1200v800H0z"/>
+  <g fill="#00ff41" fill-opacity=".42" font-family="monospace" font-size="20"><text x="90" y="120">01001000 01010101 01001101 01000001 01001110</text><text x="170" y="210">ACCESS :: NODE_07 :: ROUTE SECURE</text><text x="70" y="340">10110101 01001001 11001010 00110101</text><text x="280" y="470">ROOT PROCESS // MEMORY MAP</text><text x="110" y="610">01010110 01000101 01010010 01001001 01000110 01011001</text><text x="550" y="730">/dev/network :: listening</text></g>
+  <path d="M600 0v800" stroke="#00ff41" stroke-opacity=".35"/><circle cx="600" cy="400" r="210" fill="none" stroke="#00ff41" stroke-opacity=".25"/>
+</svg>

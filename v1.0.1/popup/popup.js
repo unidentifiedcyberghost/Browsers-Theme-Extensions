@@ -6,6 +6,42 @@
 
 let activeId = 'cyberpunk-neon';
 
+async function queryTabs() {
+  if (typeof browser !== 'undefined') return browser.tabs.query({});
+  return new Promise((resolve, reject) => chrome.tabs.query({}, tabs => {
+    const error = chrome.runtime.lastError;
+    if (error) reject(new Error(error.message));
+    else resolve(tabs);
+  }));
+}
+
+async function notifyTabs(message) {
+  let tabs;
+  try {
+    tabs = await queryTabs();
+  } catch (error) {
+    console.error('[CyberSecurity Theme] Could not find browser tabs to update.', error);
+    return;
+  }
+
+  await Promise.all(tabs.filter(tab => tab.id !== undefined).map(async tab => {
+    try {
+      if (typeof browser !== 'undefined') {
+        await browser.tabs.sendMessage(tab.id, message);
+      } else {
+        await new Promise((resolve, reject) => chrome.tabs.sendMessage(tab.id, message, () => {
+          const error = chrome.runtime.lastError;
+          if (error) reject(new Error(error.message));
+          else resolve();
+        }));
+      }
+    } catch (error) {
+      // Tabs without this extension's content script are expected (for example browser settings pages).
+      console.debug('[CyberSecurity Theme] A tab did not accept an interface update.', error);
+    }
+  }));
+}
+
 // ── Apply accent color to popup chrome ────────────────
 function setPopupAccent(theme) {
   const ac  = theme.vars['--tf-accent'];
@@ -128,7 +164,7 @@ function renderGrid(currentId) {
 
     card.querySelector('.card-btn').addEventListener('click', e => {
       e.stopPropagation();
-      applyTheme(theme.id);
+      void applyTheme(theme.id);
     });
   });
 
@@ -142,25 +178,40 @@ function renderGrid(currentId) {
 
 // ── Apply a theme ─────────────────────────────────────
 async function applyTheme(id) {
+  const theme = THEMES.find(item => item.id === id);
+  if (!theme) {
+    throw new Error(`Unknown theme ID: ${id}`);
+  }
+
+  const status = document.getElementById('themeSelectionStatus');
+  const previousId = activeId;
   activeId = id;
-  await tfStorage.set({ tf_active_theme: id });
-
-  // Notify content scripts
+  status.textContent = `Applying ${theme.name}…`;
   try {
-    const api = (typeof browser !== 'undefined') ? browser : chrome;
-    const tabs = await new Promise(res => api.tabs.query({}, res));
-    tabs.forEach(tab => {
-      try { api.tabs.sendMessage(tab.id, { type:'TF_THEME_CHANGED', themeId:id }); } catch(_){}
-    });
-  } catch(_){}
+    await tfStorage.set({ tf_active_theme: id });
+  } catch (error) {
+    activeId = previousId;
+    renderGrid(previousId);
+    status.textContent = 'Could not save the selected theme.';
+    console.error('[CyberSecurity Theme] Could not save selected theme from theme selector.', error);
+    return;
+  }
 
+  // Storage change listeners apply the saved theme in open tabs and the new-tab page.
   // Firefox browser UI theme
-  if (typeof browser !== 'undefined' && browser.theme) {
-    const t = THEMES.find(x => x.id === id);
-    if (t && t.firefox) browser.theme.update({ colors: t.firefox.colors });
+  if (typeof browser !== 'undefined' && browser.theme && theme.firefox) {
+    try {
+      await browser.theme.update({ colors: theme.firefox.colors });
+    } catch (error) {
+      console.error('[CyberSecurity Theme] The theme was saved, but Firefox browser colors could not be updated.', error);
+      status.textContent = `${theme.name} saved; Firefox colors could not be updated.`;
+      renderGrid(id);
+      return;
+    }
   }
 
   renderGrid(id);
+  status.textContent = `${theme.name} selected`;
 }
 
 // ── Toggles ───────────────────────────────────────────
@@ -169,6 +220,7 @@ async function setupToggles() {
   const iT = document.getElementById('injectToggle');
   const ipToggle = document.getElementById('publicIpToggle');
   const ipStatus = document.getElementById('publicIpStatus');
+  const soundToggle = document.getElementById('glitchSoundsToggle');
   const hostInput = document.getElementById('hudHostInput');
   const hostSave = document.getElementById('hudHostSave');
   const hostStatus = document.getElementById('hudHostStatus');
@@ -179,15 +231,29 @@ async function setupToggles() {
   const ipData = await tfStorage.get(['tf_public_ip_lookup_enabled']);
   ipToggle.checked = ipData.tf_public_ip_lookup_enabled === true;
   if (ipToggle.checked) ipStatus.textContent = 'Public IP lookup is enabled; api.ipify.org receives the request IP.';
+  await window.GlitchSounds.loadSetting();
+  soundToggle.checked = window.GlitchSounds.enabled;
+  soundToggle.addEventListener('change', async () => {
+    soundToggle.disabled = true;
+    try {
+      await window.GlitchSounds.setEnabled(soundToggle.checked);
+    } catch (error) {
+      soundToggle.checked = !soundToggle.checked;
+      console.error('[CyberSecurity Theme] Could not save the glitch sound preference.', error);
+    } finally {
+      soundToggle.disabled = false;
+    }
+  });
 
   iT.addEventListener('change', () => {
-    tfStorage.set({ tf_inject_sites: iT.checked });
-    try {
-      const api = (typeof browser!=='undefined') ? browser : chrome;
-      api.tabs.query({}, tabs => tabs.forEach(tab => {
-        try { api.tabs.sendMessage(tab.id,{type:'TF_TOGGLE_INJECT',enabled:iT.checked}); } catch(_){}
-      }));
-    } catch(_){}
+    const enabled = iT.checked;
+    void tfStorage.set({ tf_inject_sites: enabled }).then(
+      () => notifyTabs({ type:'TF_TOGGLE_INJECT', enabled }),
+      error => {
+        iT.checked = !enabled;
+        console.error('[CyberSecurity Theme] Could not save the website styling preference.', error);
+      }
+    );
   });
   ipToggle.addEventListener('change', async () => {
     const enabled = ipToggle.checked;
@@ -243,19 +309,44 @@ async function setupToggles() {
       hostStatus.textContent = 'Use 1–24 letters, numbers, hyphens, or underscores.';
       return;
     }
-    await tfStorage.set({ tf_hud_hostname: hostname });
-    hostStatus.textContent = 'Display name saved.';
-    const api = (typeof browser !== 'undefined') ? browser : chrome;
-    api.tabs.query({}, tabs => tabs.forEach(tab => {
-      try { api.tabs.sendMessage(tab.id, { type:'TF_HUD_HOST_CHANGED', hostname }); } catch(_) {}
-    }));
+    hostSave.disabled = true;
+    try {
+      await tfStorage.set({ tf_hud_hostname: hostname });
+      hostStatus.textContent = 'Display name saved.';
+      await notifyTabs({ type:'TF_HUD_HOST_CHANGED', hostname });
+    } catch (error) {
+      hostStatus.textContent = 'Could not save the display name.';
+      console.error('[CyberSecurity Theme] Could not save the terminal display name.', error);
+    } finally {
+      hostSave.disabled = false;
+    }
   });
 }
 
 // ── Init ──────────────────────────────────────────────
 (async () => {
-  const data = await tfStorage.get(['tf_active_theme']);
-  activeId = data.tf_active_theme || 'cyberpunk-neon';
   renderGrid(activeId);
-  setupToggles();
+  try {
+    const data = await tfStorage.get(['tf_active_theme']);
+    activeId = data.tf_active_theme || 'cyberpunk-neon';
+    renderGrid(activeId);
+    document.getElementById('themeSelectionStatus').textContent = `${THEMES.find(theme => theme.id === activeId)?.name || 'Cyberpunk Neon'} selected`;
+    await setupToggles();
+  } catch (error) {
+    console.error('[CyberSecurity Theme] Could not load popup preferences.', error);
+    document.getElementById('themeSelectionStatus').textContent = 'Extension settings are unavailable on this page.';
+    document.querySelectorAll('.card-btn').forEach(button => { button.disabled = true; });
+  }
 })();
+
+const popupStorage = typeof browser !== 'undefined'
+  ? browser.storage
+  : (typeof chrome !== 'undefined' ? chrome.storage : null);
+popupStorage?.onChanged?.addListener((changes, areaName) => {
+  if (areaName !== 'local' || !changes.tf_active_theme) return;
+  const theme = THEMES.find(item => item.id === changes.tf_active_theme.newValue);
+  if (!theme) return;
+  activeId = theme.id;
+  renderGrid(activeId);
+  document.getElementById('themeSelectionStatus').textContent = `${theme.name} selected`;
+});

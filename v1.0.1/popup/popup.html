@@ -30,6 +30,7 @@
       <span class="sec-title">SELECT THEME</span>
       <span class="sec-line"></span>
     </div>
+    <p class="theme-selection-status" id="themeSelectionStatus" role="status" aria-live="polite">Loading saved theme…</p>
 
     <!-- ── THEMES GRID ─────────────────────────────────────── -->
     <div class="themes-grid" id="themesGrid"><!-- rendered by JS --></div>
@@ -50,6 +51,10 @@
         <label class="tgl-switch" aria-label="Request and show public IP through ipify"><input type="checkbox" id="publicIpToggle"><span class="tgl-slider"></span></label>
       </div>
       <span id="publicIpStatus" class="host-status" aria-live="polite">Public IP lookup is off until you opt in.</span>
+      <div class="toggle-row">
+        <span class="tgl-label">Glitch interface sound effects</span>
+        <label class="tgl-switch" aria-label="Enable glitch sound effects"><input type="checkbox" id="glitchSoundsToggle"><span class="tgl-slider"></span></label>
+      </div>
       <div class="host-config">
         <label class="tgl-label" for="hudHostInput">Terminal display name</label>
         <div class="host-config-controls">
@@ -78,6 +83,7 @@
       <div class="dev-links" id="devLinks">
         <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="dev-link" target="_blank" rel="noopener noreferrer" title="Google Play Store — PinoyUnknown Apps">Play Store</a>
         <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="dev-link" target="_blank" rel="noopener noreferrer" title="Firefox Add-ons — PinoyUnknown">Firefox Addons</a>
+        <a href="https://x.com/TeamWhiteHatDev" class="dev-link" target="_blank" rel="noopener noreferrer" title="WhiteHatDev on X">WhiteHatDev</a>
         <a href="https://github.com/unidentifiedcyberghost" class="dev-link" target="_blank" rel="noopener noreferrer" title="GitHub — unidentifiedcyberghost">CyberGhost</a>
         <a href="https://github.com/pinoyUnknown" class="dev-link" target="_blank" rel="noopener noreferrer" title="GitHub — PinoyUnknown">PinoyUnknown</a>
         <a href="https://www.hostinger.com/pricing?REFERRALCODE=DPDCABINCEHM" class="dev-link" target="_blank" rel="noopener noreferrer" title="Hostinger affiliate link">Hostinger (affiliate)</a>
@@ -90,6 +96,7 @@
 
   </div><!-- /container -->
   <script src="../shared/themes.js"></script>
+  <script src="../shared/glitch-sounds.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

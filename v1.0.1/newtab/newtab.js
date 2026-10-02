@@ -31,6 +31,7 @@ function applyTheme(theme) {
   const root = document.documentElement.style;
   Object.entries(theme.vars).forEach(([k,v]) => root.setProperty(k.replace('--tf-','--'), v));
   root.setProperty('--ac-rgb', tfColorToRgb(theme.vars['--tf-accent']));
+  document.body.dataset.theme = theme.id;
   document.getElementById('tbTheme').textContent = theme.name;
   document.getElementById('hudProfile').textContent = theme.name.toUpperCase();
   cancelAnimationFrame(animId);
@@ -109,6 +110,13 @@ document.addEventListener('keydown', event => {
   }
 });
 renderHudThemeChoices(currentTheme.id);
+
+const aboutDialog = document.getElementById('aboutDialog');
+document.getElementById('aboutToggle').addEventListener('click', () => aboutDialog.showModal());
+document.getElementById('aboutClose').addEventListener('click', () => aboutDialog.close());
+aboutDialog.addEventListener('click', event => {
+  if (event.target === aboutDialog) aboutDialog.close();
+});
 
 // ── Clock & Date ──────────────────────────────────────
 function updateClock() {
@@ -394,6 +402,73 @@ async function loadBookmarks() {
 }
 loadBookmarks();
 
+// Submitted queries only; drafts typed into the search field are never stored.
+const SEARCH_HISTORY_KEY = 'tf_search_history';
+const SEARCH_HISTORY_LIMIT = 8;
+
+function renderSearchHistory(queries) {
+  const list = document.getElementById('searchHistoryList');
+  list.replaceChildren();
+  if (!queries.length) {
+    const empty = document.createElement('span');
+    empty.className = 'bookmarks-state';
+    empty.textContent = 'No recent searches.';
+    list.appendChild(empty);
+    return;
+  }
+
+  queries.forEach(query => {
+    const button = document.createElement('button');
+    button.className = 'history-item';
+    button.type = 'button';
+    button.textContent = query;
+    button.title = `Search for ${query}`;
+    button.addEventListener('click', () => {
+      document.getElementById('searchInput').value = query;
+      animateTerminalQuery(query);
+      void doSearch();
+    });
+    list.appendChild(button);
+  });
+}
+
+async function loadSearchHistory() {
+  try {
+    const data = await tfStorage.get([SEARCH_HISTORY_KEY]);
+    const queries = Array.isArray(data[SEARCH_HISTORY_KEY])
+      ? data[SEARCH_HISTORY_KEY].filter(value => typeof value === 'string' && value.trim()).slice(0, SEARCH_HISTORY_LIMIT)
+      : [];
+    renderSearchHistory(queries);
+  } catch (error) {
+    console.error('[Theme Forge] Could not load local search history.', error);
+    const list = document.getElementById('searchHistoryList');
+    list.replaceChildren();
+    const message = document.createElement('span');
+    message.className = 'bookmarks-state';
+    message.textContent = 'Could not load search history.';
+    list.appendChild(message);
+  }
+}
+
+async function recordSearch(query) {
+  const data = await tfStorage.get([SEARCH_HISTORY_KEY]);
+  const previous = Array.isArray(data[SEARCH_HISTORY_KEY]) ? data[SEARCH_HISTORY_KEY] : [];
+  const queries = [query, ...previous.filter(value => typeof value === 'string' && value.trim() !== query)]
+    .slice(0, SEARCH_HISTORY_LIMIT);
+  await tfStorage.set({ [SEARCH_HISTORY_KEY]: queries });
+  renderSearchHistory(queries);
+}
+
+document.getElementById('clearSearchHistory').addEventListener('click', async () => {
+  try {
+    await tfStorage.set({ [SEARCH_HISTORY_KEY]: [] });
+    renderSearchHistory([]);
+  } catch (error) {
+    console.error('[Theme Forge] Could not clear local search history.', error);
+  }
+});
+loadSearchHistory();
+
 // ── Privacy-safe local network status ──────────────────
 function updateNetworkStatus() {
   const status = document.getElementById('networkStatus');
@@ -623,9 +698,16 @@ document.getElementById('engineTabs').addEventListener('click', e => {
   b.classList.add('active');
   searchBase = b.dataset.url;
 });
-function doSearch() {
+async function doSearch() {
   const q = document.getElementById('searchInput').value.trim();
-  if (q) window.location.href = searchBase + encodeURIComponent(q);
+  if (!q) return;
+  window.GlitchSounds.play('search');
+  try {
+    await recordSearch(q);
+  } catch (error) {
+    console.error('[Theme Forge] Could not save submitted search history.', error);
+  }
+  window.location.href = searchBase + encodeURIComponent(q);
 }
 document.getElementById('searchBtn').addEventListener('click', doSearch);
 document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
@@ -833,6 +915,87 @@ function startHearts() {
   draw();
 }
 
+function startGlitch() {
+  const colors = ['#ff32a6', '#20f6ef', '#ff3d4d', '#b5ff38', '#ffe347', '#ff8b35', '#a66bff'];
+  const fragments = Array.from({ length: 68 }, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    width: Math.random() * 42 + 5,
+    height: Math.random() * 3 + 1,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    alpha: Math.random() * 0.55 + 0.12,
+    speed: Math.random() * 1.8 + 0.25,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    fragments.forEach(fragment => {
+      if (Math.random() < 0.045) {
+        fragment.x = Math.random() * W;
+        fragment.y = Math.random() * H;
+        fragment.color = colors[Math.floor(Math.random() * colors.length)];
+      } else {
+        fragment.x += fragment.speed;
+        if (fragment.x > W) fragment.x = -fragment.width;
+      }
+      ctx.globalAlpha = fragment.alpha * (Math.random() < 0.08 ? 0.25 : 1);
+      ctx.fillStyle = fragment.color;
+      ctx.fillRect(fragment.x, fragment.y, fragment.width, fragment.height);
+    });
+    ctx.globalAlpha = 1;
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function startHtb() {
+  const nodes = Array.from({ length: 48 }, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.22,
+    vy: (Math.random() - 0.5) * 0.22,
+    phase: Math.random() * Math.PI * 2,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const time = Date.now() * 0.001;
+    nodes.forEach(node => {
+      node.x += node.vx;
+      node.y += node.vy;
+      if (node.x < 0 || node.x > W) node.vx *= -1;
+      if (node.y < 0 || node.y > H) node.vy *= -1;
+    });
+
+    nodes.forEach((node, index) => {
+      nodes.slice(index + 1).forEach(other => {
+        const distance = Math.hypot(node.x - other.x, node.y - other.y);
+        if (distance < 115) {
+          ctx.globalAlpha = (1 - distance / 115) * 0.17;
+          ctx.strokeStyle = '#9fef00';
+          ctx.lineWidth = 0.65;
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(other.x, other.y);
+          ctx.stroke();
+        }
+      });
+      ctx.globalAlpha = 0.18 + (Math.sin(time + node.phase) + 1) * 0.13;
+      ctx.strokeStyle = '#9fef00';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(node.x - 5, node.y);
+      ctx.lineTo(node.x + 5, node.y);
+      ctx.moveTo(node.x, node.y - 5);
+      ctx.lineTo(node.x, node.y + 5);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
 // ── Route to correct particle system ──────────────────
 function startParticles(type) {
   cancelAnimationFrame(animId);
@@ -846,6 +1009,8 @@ function startParticles(type) {
     case 'stars':   startStars();   break;
     case 'static':  startStatic();  break;
     case 'hearts':  startHearts();  break;
+    case 'glitch':  startGlitch();  break;
+    case 'htb':     startHtb();     break;
     default:        startGrid();    break;
   }
 }

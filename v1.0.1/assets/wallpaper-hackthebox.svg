@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#07120f"/><stop offset=".55" stop-color="#0b1b15"/><stop offset="1" stop-color="#10251c"/></linearGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M56 0H0V56" fill="none" stroke="#9fef00" stroke-opacity=".13"/>
+      <circle cx="0" cy="0" r="2" fill="#9fef00" fill-opacity=".35"/>
+    </pattern>
+    <linearGradient id="beam" x2="0" y2="1"><stop stop-color="#9fef00" stop-opacity="0"/><stop offset=".5" stop-color="#9fef00" stop-opacity=".12"/><stop offset="1" stop-color="#9fef00" stop-opacity="0"/></linearGradient>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h1200v800H0z"/>
+  <path fill="url(#grid)" d="M0 0h1200v800H0z"/>
+  <g fill="none" stroke="#9fef00" stroke-opacity=".48" stroke-width="2">
+    <path d="M85 154h250l48 48v136l-48 48H85l-48-48V202z"/>
+    <path d="M831 278h220l48 48v136l-48 48H831l-48-48V326z"/>
+    <path d="M478 518h170l38 38v108l-38 38H478l-38-38V556z"/>
+    <path d="M335 202l222 110 274 14M335 386l181 170m497-230L686 564"/>
+  </g>
+  <g fill="#9fef00" fill-opacity=".78">
+    <circle cx="335" cy="202" r="5"/><circle cx="335" cy="386" r="5"/><circle cx="831" cy="340" r="5"/>
+    <circle cx="478" cy="556" r="5"/><circle cx="784" cy="326" r="5"/><circle cx="648" cy="556" r="5"/>
+  </g>
+  <g fill="#d7ff9b" fill-opacity=".45" font-family="monospace" font-size="18">
+    <text x="105" y="246">LAB // ACCESS NODE</text>
+    <text x="851" y="370">TARGET // ONLINE</text>
+    <text x="495" y="590">SESSION // ENCRYPTED</text>
+  </g>
+  <path fill="url(#beam)" d="M0 0h1200v800H0z"/>
+</svg>
