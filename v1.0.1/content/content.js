@@ -9,7 +9,7 @@ const HUD_ID = 'tf-cyber-hud';
 const _rt = (typeof browser !== 'undefined') ? browser.runtime : chrome.runtime;
 let hudHostname = 'PinoyUnknown';
 let hudRoot;
-let searchHudExpiresAt = 0;
+let hudExpiresAt = 0;
 let searchHudRemovalTimer = 0;
 
 // Inject CSS variables into the page :root
@@ -83,22 +83,20 @@ function renderSiteHud(theme) {
   const accent = theme.vars['--tf-accent'];
   const accent2 = theme.vars['--tf-accent2'];
   const wallpaperUrl = _rt.getURL(theme.wallpaper || 'assets/cyber-city.svg');
-  if (searchText) {
-    if (!searchHudExpiresAt) searchHudExpiresAt = Date.now() + 3000;
-    const remaining = searchHudExpiresAt - Date.now();
-    if (remaining <= 0) {
-      clearTimeout(searchHudRemovalTimer);
-      document.getElementById(HUD_ID)?.remove();
-      return;
-    }
+  if (!hudExpiresAt) hudExpiresAt = Date.now() + 3000;
+  const remaining = hudExpiresAt - Date.now();
+  if (remaining <= 0) {
     clearTimeout(searchHudRemovalTimer);
-    searchHudRemovalTimer = setTimeout(() => {
-      document.getElementById(HUD_ID)?.remove();
-    }, remaining);
-  } else {
-    searchHudExpiresAt = 0;
-    clearTimeout(searchHudRemovalTimer);
+    document.getElementById(HUD_ID)?.remove();
+    return;
   }
+  clearTimeout(searchHudRemovalTimer);
+  searchHudRemovalTimer = setTimeout(() => {
+    document.getElementById(HUD_ID)?.remove();
+    hudRoot = undefined;
+  }, remaining);
+  host.style.opacity = '1';
+  host.style.transition = `opacity ${remaining}ms linear`;
   hudRoot.innerHTML = `
     <style>
       :host { all:initial; position:fixed; inset:0; z-index:2147483647; display:block; pointer-events:none; }
@@ -115,10 +113,6 @@ function renderSiteHud(theme) {
         color:${accent}; font:11px/1.5 "Ubuntu Mono",Consolas,monospace;
         letter-spacing:.35px; backdrop-filter:blur(8px);
         animation:terminal-glow 3.4s ease-in-out infinite;
-      }
-      .terminal.search-terminal {
-        opacity:${searchText ? Math.max(0, (searchHudExpiresAt - Date.now()) / 3000) : 1};
-        transition:opacity ${searchText ? Math.max(0, searchHudExpiresAt - Date.now()) : 0}ms linear;
       }
       .status { display:flex; justify-content:space-between; gap:12px; color:${accent2}; font-size:9px; }
       .prompt { color:${accent}; }
@@ -137,11 +131,10 @@ function renderSiteHud(theme) {
       ${searchText ? '<div class="secure">root@CyberSecurity:~$ secured and safe...</div>' : ''}
       ${searchText ? '<div class="secure">root@CyberSecurity:~$ Connection Secured...</div>' : ''}
     </div>`;
-  if (searchText) {
-    const terminal = hudRoot.querySelector('.terminal');
-    terminal.classList.add('search-terminal');
-    requestAnimationFrame(() => { terminal.style.opacity = '0'; });
-  }
+  const terminal = hudRoot.querySelector('.terminal');
+  terminal.style.opacity = String(Math.min(1, remaining / 3000));
+  terminal.style.transition = `opacity ${remaining}ms linear`;
+  requestAnimationFrame(() => { host.style.opacity = '0'; });
   const command = hudRoot.querySelector('.page');
   const targetWidth = command.scrollWidth;
   command.style.transition = `width ${Math.min(1800, Math.max(350, targetWidth * 12))}ms steps(${Math.max(1, terminalLine.length)},end)`;

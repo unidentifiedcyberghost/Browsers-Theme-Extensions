@@ -214,7 +214,7 @@ This release grew through the following updates. Together they describe the chan
 - Made the machine/network status panel collapsible and more compact; added browser online/offline and connection-type information where supported.
 
 ##### 3. Search HUD and interface sound
-- Added a small website HUD with the CyberSecurity terminal prompt and search text, then fade/remove it after three seconds.
+- Added a small website HUD with the CyberSecurity terminal prompt and current page/search text; the complete floating overlay fades out and is removed after three seconds on every website.
 - Added “secured and safe...” and “Connection Secured...” decorative lines. These are visual flavor only: the extension does not inspect or certify website safety.
 - Added locally synthesized glitch-style audio for typing in extension interface fields, clicking interface controls, and submitting searches. It uses Web Audio without remote audio files or sound requests; it is enabled by default and can be switched off in **ABOUT → Preferences**.
 
