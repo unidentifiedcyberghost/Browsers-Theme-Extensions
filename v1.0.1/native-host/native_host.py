@@ -126,6 +126,38 @@ def format_bytes(value):
     return f"{amount:.1f} TB"
 
 
+def read_uptime_seconds():
+    system = platform.system()
+    if system == "Windows":
+        kernel32 = ctypes.windll.kernel32
+        kernel32.GetTickCount64.restype = ctypes.c_ulonglong
+        return int(kernel32.GetTickCount64() / 1000)
+
+    if system == "Linux":
+        with open("/proc/uptime", encoding="ascii") as uptime_file:
+            return int(float(uptime_file.readline().split()[0]))
+
+    if system == "Darwin":
+        output = subprocess.check_output(
+            ["/usr/sbin/sysctl", "-n", "kern.boottime"], text=True, timeout=3
+        )
+        match = re.search(r"sec = (\d+)", output)
+        if not match:
+            raise OSError("Could not determine macOS boot time")
+        return max(0, int(time.time() - int(match.group(1))))
+
+    raise OSError("Unsupported operating system")
+
+
+def format_uptime(seconds):
+    days, remainder = divmod(max(0, int(seconds)), 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, _ = divmod(remainder, 60)
+    if days:
+        return f"{days}d {hours}h {minutes}m"
+    return f"{hours}h {minutes}m"
+
+
 def read_local_ip():
     targets = (
         (socket.AF_INET, ("192.0.2.1", 9)),
@@ -152,13 +184,23 @@ def get_metrics():
     except (OSError, subprocess.SubprocessError):
         cpu_text = "NOT AVAILABLE"
 
+    used_disk = disk.total - disk.free
+    try:
+        uptime = format_uptime(read_uptime_seconds())
+    except (OSError, subprocess.SubprocessError, ValueError):
+        uptime = "NOT AVAILABLE"
+
     return {
         "hostname": platform.node() or os.environ.get("COMPUTERNAME", "Unknown"),
         "os": platform.system(),
         "memory": f"{format_bytes(total_memory - available_memory)} / {format_bytes(total_memory)}",
-        "storage": f"{format_bytes(disk.free)} free / {format_bytes(disk.total)}",
+        "storage": f"{format_bytes(disk.free)} free / {format_bytes(disk.total)} total",
+        "disk_used": format_bytes(used_disk),
+        "disk_free": format_bytes(disk.free),
+        "disk_total": format_bytes(disk.total),
         "cpu": cpu_text,
         "local_ip": read_local_ip(),
+        "uptime": uptime,
     }
 
 

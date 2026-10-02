@@ -47,6 +47,10 @@ The world-clock rail is placed near the top of the right column. It shows all 17
 
 The center greeting, search-engine selector, and search input appear before the main clock panel. The center clock is intentionally compact, and the search field has a brighter accent border, background, and focus state so users can find it quickly.
 
+The small gear in the new-tab top bar expands/collapses an inline HUD theme selector. Selecting a theme saves it for future tabs and updates the new-tab HUD, website styling, and Firefox browser colors. The search-results terminal banner is decorative; it does not scan or certify the destination site's security.
+
+The compact machine panel reports browser network online/offline and connection type when available, plus optional native-helper CPU, RAM, OS, local IP, disk capacity, and uptime. Disk used/free is shown directly, with total capacity available on hover. Uptime and detailed disk data require the updated optional helper; older helper installations should be updated by rerunning its installer.
+
 ---
 
 ## 🎨 Themes (9 Total)
@@ -184,6 +188,12 @@ Browser-Theme-Extensions/
 
 #### `v1.0.1` — CyberSecurity Theme (Complete Edition)
 **Release Date:** 2024
+
+##### HUD and Metrics Updates
+- Added a collapsible top-bar gear selector for all nine themes; selections persist and update the new-tab HUD, themed websites, and Firefox browser colors.
+- Updated the search-results HUD prompt and added a decorative “secured and safe...” line; it does not scan or certify site security.
+- Reduced machine-panel spacing and added helper-reported uptime, visible disk used/free capacity, and total capacity in the value tooltip.
+- Increased the world-clock country, time, and date text for readability.
 
 ##### ✨ New Features
 - Added **9th theme**: 🔐 CyberSecurity Dark (Neon Green + Navy)

@@ -101,6 +101,7 @@ function renderSiteHud(theme) {
       .status { display:flex; justify-content:space-between; gap:12px; color:${accent2}; font-size:9px; }
       .prompt { color:${accent}; }
       .page { width:0; max-width:calc(100vw - 48px); overflow:hidden; white-space:nowrap; }
+      .secure { margin-top:2px; color:${accent}; opacity:.82; }
       .cursor { display:inline-block; width:6px; height:11px; margin-left:4px; vertical-align:-2px; background:${accent}; animation:cursor-blink 1s steps(2,start) infinite; }
       @keyframes cursor-blink { to { visibility:hidden; } }
       @keyframes terminal-glow { 50% { box-shadow:0 0 26px ${accent}; border-color:${accent2}; } }
@@ -109,8 +110,9 @@ function renderSiteHud(theme) {
     </style>
     <div class="ambient"></div>
     <div class="terminal">
-      <div class="status"><span>ACCESS MODE // HUD SIMULATION</span><span>SESSION ACTIVE</span></div>
-      <div class="page"><span class="prompt">root@${escapeText(hudHostname)}:~$</span> ${escapeText(terminalLine)}<span class="cursor"></span></div>
+      <div class="status"><span>ACCESS MODE // HUD CYBERSECURITY THEME -</span><span>SESSION ACTIVE</span></div>
+      <div class="page"><span class="prompt">root@CyberSecurity:~$</span> ${escapeText(terminalLine)}<span class="cursor"></span></div>
+      ${searchText ? '<div class="secure">root@CyberSecurity:~$ secured and safe...</div>' : ''}
     </div>`;
   const command = hudRoot.querySelector('.page');
   const targetWidth = command.scrollWidth;
@@ -159,6 +161,17 @@ _rt.onMessage.addListener((msg) => {
     }
   }
   if (msg.type === 'TF_HUD_HOST_CHANGED') updateHudHostname(msg.hostname);
+});
+
+const storageApi = typeof browser !== 'undefined' ? browser.storage : chrome.storage;
+storageApi.onChanged.addListener((changes, areaName) => {
+  if (areaName !== 'local' || !changes.tf_active_theme) return;
+  const theme = getThemeById(changes.tf_active_theme.newValue);
+  tfStorage.get(['tf_inject_sites']).then(data => {
+    if (data.tf_inject_sites !== false) injectTheme(theme);
+  }).catch(error => {
+    console.error('[CyberSecurity Theme] Could not apply the updated site theme.', error);
+  });
 });
 
 // Auto-apply on page load

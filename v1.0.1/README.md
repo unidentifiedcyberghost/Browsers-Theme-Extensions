@@ -41,6 +41,10 @@ The terminal echoes text typed into the new-tab search box with a typing animati
 
 The world-clock rail sits high in the right column and shows all 17 locations at once without a scrollbar; country names are bold white and have no glow. The greeting, search-engine selector, and search input appear before the main clock panel. The center clock is compact with reduced visual effects, while the search field has a stronger accent border, background, and focus state.
 
+The gear button in the top bar expands/collapses the in-page HUD theme selector. Choosing a theme persists it and updates the HUD, website styling, and Firefox browser colors. The search-results terminal's “secured and safe” text is decorative only; the extension does not scan or certify website security.
+
+The compact machine panel reports browser online/offline and connection type where available. With the updated optional helper it also reports CPU, RAM, OS, local IP, disk used/free capacity (total capacity on hover), and system uptime. Rerun the native-helper installer after updating the extension to add uptime and detailed disk data.
+
 ---
 
 ## 🎨 Themes
@@ -147,6 +151,10 @@ Browser-Theme-Extensions/
 - Added local online/offline and browser-reported connection-type status. Public IP, ISP, and VPN details are not collected or sent to external services.
 - Added an optional cross-platform native helper for the real machine hostname, CPU, RAM, and home-disk space, plus an editable terminal display alias.
 - Added a theme-colored animated mini-HUD to normal web pages while leaving site controls clickable; it shows the visited host, not full URLs or page contents.
+- Added a collapsible top-bar gear selector for all nine themes; selections persist and update the new-tab HUD, themed websites, and Firefox browser colors.
+- Updated the search-results HUD prompt and added a decorative “secured and safe...” line; it does not scan or certify site security.
+- Reduced machine-panel spacing and added helper-reported uptime, visible disk used/free capacity, and total capacity in the value tooltip.
+- Increased the world-clock country, time, and date text for readability.
 - Added the Firefox AMO upload package at `packages/CyberSecurityTheme-v1.0.1-firefox.zip`.
 
 #### `v1.0.0` — Initial Release

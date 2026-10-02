@@ -37,6 +37,79 @@ function applyTheme(theme) {
   startParticles(theme.particle);
 }
 
+function renderHudThemeChoices(activeThemeId) {
+  const grid = document.getElementById('themeSettingsGrid');
+  grid.replaceChildren();
+
+  THEMES.forEach(theme => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'theme-choice';
+    button.textContent = theme.name;
+    button.dataset.themeId = theme.id;
+    button.setAttribute('aria-pressed', String(theme.id === activeThemeId));
+    button.style.setProperty('--choice-accent', theme.vars['--tf-accent']);
+    button.style.setProperty('--choice-rgb', tfColorToRgb(theme.vars['--tf-accent']));
+    button.addEventListener('click', () => { void selectHudTheme(theme.id); });
+    grid.appendChild(button);
+  });
+}
+
+function setThemeSettingsOpen(open) {
+  const toggle = document.getElementById('themeSettingsToggle');
+  const panel = document.getElementById('themeSettingsPanel');
+  toggle.setAttribute('aria-expanded', String(open));
+  toggle.setAttribute('aria-label', open ? 'Close theme settings' : 'Open theme settings');
+  panel.hidden = !open;
+  if (open) document.querySelector('.theme-choice[aria-pressed="true"]')?.focus();
+}
+
+async function selectHudTheme(themeId) {
+  const theme = THEMES.find(item => item.id === themeId);
+  if (!theme) {
+    throw new Error(`Unknown HUD theme: ${themeId}`);
+  }
+
+  const status = document.getElementById('themeSettingsStatus');
+  status.textContent = 'Saving…';
+  try {
+    await tfStorage.set({ tf_active_theme: themeId });
+  } catch (error) {
+    console.error('[CyberSecurity Theme] Could not save the selected HUD theme.', error);
+    status.textContent = 'Could not save theme';
+    return;
+  }
+
+  applyTheme(theme);
+  renderHudThemeChoices(themeId);
+  status.textContent = `${theme.name} active`;
+  setThemeSettingsOpen(false);
+
+  if (typeof browser !== 'undefined' && browser.theme && theme.firefox?.colors) {
+    try {
+      await browser.theme.update({ colors: theme.firefox.colors });
+    } catch (error) {
+      console.error('[CyberSecurity Theme] The HUD theme was saved, but Firefox browser colors could not be updated.', error);
+      status.textContent = `${theme.name} active · browser colors unavailable`;
+    }
+  }
+}
+
+document.getElementById('themeSettingsToggle').addEventListener('click', () => {
+  const isOpen = document.getElementById('themeSettingsToggle').getAttribute('aria-expanded') === 'true';
+  setThemeSettingsOpen(!isOpen);
+});
+document.addEventListener('click', event => {
+  if (!event.target.closest('.theme-settings')) setThemeSettingsOpen(false);
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.getElementById('themeSettingsToggle').getAttribute('aria-expanded') === 'true') {
+    setThemeSettingsOpen(false);
+    document.getElementById('themeSettingsToggle').focus();
+  }
+});
+renderHudThemeChoices(currentTheme.id);
+
 // ── Clock & Date ──────────────────────────────────────
 function updateClock() {
   const now  = new Date();
@@ -439,10 +512,19 @@ const storageApi = typeof browser !== 'undefined'
   ? browser.storage
   : (typeof chrome !== 'undefined' ? chrome.storage : null);
 storageApi?.onChanged?.addListener((changes, areaName) => {
-  if (areaName !== 'local' || !changes.tf_public_ip_lookup_enabled) return;
-  publicIpRequestToken += 1;
-  if (changes.tf_public_ip_lookup_enabled.newValue === true) void updatePublicIp();
-  else setPublicIp('OPT-IN REQUIRED');
+  if (areaName !== 'local') return;
+  if (changes.tf_active_theme) {
+    const theme = THEMES.find(item => item.id === changes.tf_active_theme.newValue);
+    if (theme) {
+      applyTheme(theme);
+      renderHudThemeChoices(theme.id);
+    }
+  }
+  if (changes.tf_public_ip_lookup_enabled) {
+    publicIpRequestToken += 1;
+    if (changes.tf_public_ip_lookup_enabled.newValue === true) void updatePublicIp();
+    else setPublicIp('OPT-IN REQUIRED');
+  }
 });
 const permissionApi = typeof browser !== 'undefined'
   ? browser.permissions
@@ -474,7 +556,16 @@ function updateMachinePanel(metrics) {
   document.getElementById('machineName').textContent = metrics.hostname;
   document.getElementById('machineCpu').textContent = metrics.cpu;
   document.getElementById('machineMemory').textContent = metrics.memory;
-  document.getElementById('machineStorage').textContent = metrics.storage;
+  document.getElementById('machineStorage').textContent = metrics.disk_used && metrics.disk_free
+    ? `${metrics.disk_used} used / ${metrics.disk_free} free`
+    : metrics.storage;
+  document.getElementById('machineUptime').textContent = metrics.uptime || 'UPDATE HELPER';
+  document.getElementById('machineStorage').title = metrics.disk_used
+    ? `${metrics.disk_used} used · ${metrics.disk_free} free · ${metrics.disk_total} total`
+    : metrics.storage;
+  document.getElementById('machineUptime').title = metrics.uptime
+    ? `System uptime: ${metrics.uptime}`
+    : 'Update the optional native helper to report system uptime.';
   document.getElementById('machineOs').textContent = typeof metrics.os === 'string' ? metrics.os : 'UPDATE HELPER';
   document.getElementById('machineName').title = metrics.hostname;
   const localIp = typeof metrics.local_ip === 'string'
@@ -512,9 +603,10 @@ async function loadMachineMetrics() {
     document.getElementById('machineCpu').textContent = 'NOT AVAILABLE';
     document.getElementById('machineMemory').textContent = 'NOT AVAILABLE';
     document.getElementById('machineStorage').textContent = 'NOT AVAILABLE';
+    document.getElementById('machineUptime').textContent = 'NOT AVAILABLE';
     document.getElementById('localIp').textContent = helperStatus;
     document.getElementById('globeLocalIp').textContent = helperStatus;
-    for (const id of ['machineName', 'machineOs', 'machineCpu', 'machineMemory', 'machineStorage', 'localIp', 'globeLocalIp']) {
+    for (const id of ['machineName', 'machineOs', 'machineCpu', 'machineMemory', 'machineStorage', 'machineUptime', 'localIp', 'globeLocalIp']) {
       document.getElementById(id).title = `${helperStatus}: ${helperInstructions}`;
     }
   }

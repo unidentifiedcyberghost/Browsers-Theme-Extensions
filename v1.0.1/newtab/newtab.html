@@ -51,6 +51,22 @@
         <span class="tb-theme" id="tbTheme">Cyberpunk Neon</span>
       </div>
       <div class="topbar-right">
+        <div class="theme-settings">
+          <button class="theme-settings-toggle" id="themeSettingsToggle" type="button"
+            aria-expanded="false" aria-controls="themeSettingsPanel" aria-label="Open theme settings"
+            title="Theme settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm9 4.9v-2.2l-2.1-.5a7.1 7.1 0 0 0-.7-1.7l1.1-1.9-1.6-1.6-1.9 1.1a7.1 7.1 0 0 0-1.7-.7L13.6 3h-2.2l-.5 2.1a7.1 7.1 0 0 0-1.7.7L7.3 4.7 5.7 6.3l1.1 1.9a7.1 7.1 0 0 0-.7 1.7L4 10.4v2.2l2.1.5a7.1 7.1 0 0 0 .7 1.7l-1.1 1.9 1.6 1.6 1.9-1.1a7.1 7.1 0 0 0 1.7.7l.5 2.1h2.2l.5-2.1a7.1 7.1 0 0 0 1.7-.7l1.9 1.1 1.6-1.6-1.1-1.9a7.1 7.1 0 0 0 .7-1.7L21 13.1Z"/>
+            </svg>
+          </button>
+          <section class="theme-settings-panel" id="themeSettingsPanel" aria-label="Choose a HUD theme" hidden>
+            <div class="theme-settings-heading">
+              <span>HUD STYLE // SELECT PROFILE</span>
+              <span id="themeSettingsStatus" role="status" aria-live="polite"></span>
+            </div>
+            <div class="theme-settings-grid" id="themeSettingsGrid"></div>
+          </section>
+        </div>
         <span class="tb-tag">CyberSecurity Theme v1.0.1</span>
       </div>
     </div>
@@ -63,7 +79,7 @@
     <section class="network-panel" aria-label="Machine and IP status; public address is queried through ipify and local address is read by the optional helper">
       <div class="network-heading">
         <span>NETWORK // MACHINE STATUS</span>
-        <span id="networkPrivacy">IPIFY OPT-IN · ISP / VPN NOT QUERIED</span>
+        <span id="networkPrivacy" title="Public IP lookup is optional. ISP and VPN are not queried.">IPIFY OPT-IN · ISP / VPN NOT QUERIED</span>
       </div>
       <div class="network-stats">
         <div class="network-stat"><span class="network-label">MACHINE</span><span class="network-value" id="machineName">DETECTING</span></div>
@@ -75,6 +91,7 @@
         <div class="network-stat"><span class="network-label">OS</span><span class="network-value" id="machineOs">HELPER NOT INSTALLED</span></div>
         <div class="network-stat"><span class="network-label">TYPE</span><span class="network-value" id="networkType">NOT REPORTED</span></div>
         <div class="network-stat"><span class="network-label">HOME DISK</span><span class="network-value" id="machineStorage">HELPER NOT INSTALLED</span></div>
+        <div class="network-stat"><span class="network-label">UPTIME</span><span class="network-value" id="machineUptime">HELPER NOT INSTALLED</span></div>
       </div>
     </section>
 
@@ -120,7 +137,7 @@
               <span class="hud-label"><span class="terminal-prompt" id="terminalHeader">root@PinoyUnknown:~$</span> conky --hud</span>
               <span class="hud-live"><span class="hud-live-dot"></span>LIVE</span>
             </div>
-            <div class="access-line"><span>ACCESS MODE // SIMULATED HUD</span><strong>ACCESS GRANTED</strong></div>
+            <div class="access-line"><span>ACCESS MODE // HUD CYBERSECURITY THEME -</span><strong>SESSION ACTIVE</strong></div>
             <div class="clock-block">
               <div class="clock" id="clock">00:00:00</div>
               <div class="date-row">
