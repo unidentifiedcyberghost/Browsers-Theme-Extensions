@@ -4,6 +4,10 @@
 > **Version:** v1.0.0  
 > **Firefox Add-ons Profile:** https://addons.mozilla.org/en-US/firefox/user/20195701/
 
+> **Current release:** v1.0.1 is in `v1.0.1/`; its Firefox-ready upload package is `packages/ThemeForge-v1.0.1-firefox.zip`. It adds a Conky-inspired clock HUD, saved-bookmark shortcuts, and local-only network status. The package/installation examples below are for v1.0.0—use the v1.0.1 archive when testing or submitting the new release.
+>
+> If Theme Forge is absent from the public profile, check AMO Developer Hub → **My Add-ons** for the submission/review status and verify public (“On this site”) distribution. Uploading a file or choosing self-distribution does not create a public profile listing.
+
 ---
 
 ## 📋 Table of Contents
@@ -47,6 +51,12 @@
 
 ---
 
+## 💻 Install on YOUR Firefox Browser (Local Computer)
+
+> This is the **easiest way** to use the extension on your own Firefox right now.
+> No developer account needed. Uses the ready-made `.xpi` file.
+
+---
 
 ## 💻 Install on YOUR Firefox Browser (Local Computer)
 

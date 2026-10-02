@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CyberSecurity Theme v1.0.1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Ubuntu:wght@300;400;700&family=Ubuntu+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container" id="container">
+
+    <!-- ── HEADER ─────────────────────────────────────────── -->
+    <header class="header">
+      <div class="logo-wrap">
+        <div class="logo-icon" id="logoIcon">◈</div>
+        <div class="logo-text">
+          <h1 class="logo-title">CyberSecurity Theme</h1>
+          <span class="logo-sub">by PinoyUnknown</span>
+        </div>
+      </div>
+      <div class="active-badge" id="activeBadge">
+        <span class="pulse-dot"></span>
+        <span class="active-name" id="activeName">Loading…</span>
+      </div>
+    </header>
+
+    <!-- ── SECTION LABEL ──────────────────────────────────── -->
+    <div class="section-hdr">
+      <span class="sec-line"></span>
+      <span class="sec-title">SELECT THEME</span>
+      <span class="sec-line"></span>
+    </div>
+
+    <!-- ── THEMES GRID ─────────────────────────────────────── -->
+    <div class="themes-grid" id="themesGrid"><!-- rendered by JS --></div>
+
+    <!-- ── TOGGLES ─────────────────────────────────────────── -->
+    <div class="toggles-wrap">
+      <div class="toggle-row">
+        <span class="tgl-label">Apply theme to websites</span>
+        <label class="tgl-switch"><input type="checkbox" id="injectToggle"><span class="tgl-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span class="tgl-label">Custom New Tab page</span>
+        <label class="tgl-switch"><input type="checkbox" id="newtabToggle" checked><span class="tgl-slider"></span></label>
+      </div>
+      <div class="host-config">
+        <label class="tgl-label" for="hudHostInput">Terminal display name</label>
+        <div class="host-config-controls">
+          <input id="hudHostInput" class="host-input" type="text" value="PinoyUnknown" maxlength="24" autocomplete="off" spellcheck="false" aria-describedby="hudHostStatus">
+          <button id="hudHostSave" class="host-save" type="button">SAVE</button>
+        </div>
+        <span id="hudHostStatus" class="host-status" aria-live="polite">Shown as a display alias; device name is not detected.</span>
+      </div>
+    </div>
+
+    <!-- ── DEVELOPER FOOTER ────────────────────────────────── -->
+    <footer class="footer">
+      <div class="footer-divider">
+        <span class="div-line"></span>
+        <span class="div-text">DEVELOPER LINKS</span>
+        <span class="div-line"></span>
+      </div>
+      <div class="dev-links" id="devLinks">
+        <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="dev-link" target="_blank" title="Google Play Store — PinoyUnknown Apps"><span class="dev-icon">🎮</span><span class="dev-name">Play Store</span></a>
+        <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="dev-link" target="_blank" title="Firefox Add-ons — PinoyUnknown"><span class="dev-icon">🦊</span><span class="dev-name">Firefox Addons</span></a>
+        <a href="https://github.com/unidentifiedcyberghost" class="dev-link" target="_blank" title="GitHub — unidentifiedcyberghost"><span class="dev-icon">🐙</span><span class="dev-name">CyberHost</span></a>
+        <a href="https://github.com/pinoyUnknown" class="dev-link" target="_blank" title="GitHub — PinoyUnknown"><span class="dev-icon">🐙</span><span class="dev-name">PinoyUnk</span></a>
+        <a href="https://instagram.com/pinoyunknown" class="dev-link" target="_blank" title="Instagram @pinoyunknown"><span class="dev-icon">📸</span><span class="dev-name">Instagram</span></a>
+        <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="dev-link" target="_blank" title="YouTube — PinoyUnknown"><span class="dev-icon">▶</span><span class="dev-name">YouTube</span></a>
+      </div>
+      <p class="copyright">© 2024 PinoyUnknown · unidentifiedcyberghost · v1.0.1</p>
+    </footer>
+
+  </div><!-- /container -->
+  <script src="../shared/themes.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

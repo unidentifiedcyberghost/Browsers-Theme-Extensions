@@ -1,0 +1,73 @@
+{
+  "manifest_version": 2,
+  "name": "CyberSecurity Theme v1.0.1",
+  "version": "1.0.1",
+  "description": "8 animated browser themes with a Conky-inspired HUD, saved bookmarks, and privacy-safe network status.",
+  "author": "PinoyUnknown | unidentifiedcyberghost",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "cybersecurity-theme@pinoyunknown.dev",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ],
+        "optional": []
+      }
+    }
+  },
+  "homepage_url": "https://github.com/unidentifiedcyberghost/Browsers-Theme-Extensions",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "CyberSecurity Theme v1.0.1"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab/newtab.html"
+  },
+  "background": {
+    "scripts": [
+      "background/background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "shared/themes.js",
+        "content/content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "theme",
+    "bookmarks",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "https://api.exchangerate-api.com/*"
+  ],
+  "web_accessible_resources": [
+    "shared/themes.js",
+    "newtab/*",
+    "assets/*",
+    "icons/*"
+  ]
+}

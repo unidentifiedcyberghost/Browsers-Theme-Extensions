@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CyberSecurity Theme v1.0.1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;600;700;900&family=Ubuntu:wght@300;400;700&family=Ubuntu+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="newtab.css">
+</head>
+<body>
+  <div class="wallpaper" aria-hidden="true"></div>
+  <!-- Animated background canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="page" id="page">
+
+    <!-- ── TOP BAR ───────────────────────────────────────── -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="tb-dot"></span>
+        <span class="tb-theme" id="tbTheme">Cyberpunk Neon</span>
+      </div>
+      <div class="topbar-right">
+        <span class="tb-tag">CyberSecurity Theme v1.0.1</span>
+      </div>
+    </div>
+
+    <!-- ── CURRENCY TICKER ───────────────────────────────── -->
+    <div id="currencyTicker" class="currency-ticker" aria-live="polite" aria-label="Real-time currency exchange rates">
+      <span class="ticker-item">Loading rates…</span>
+    </div>
+
+    <section class="network-panel" aria-label="Local machine and network status">
+      <div class="network-heading">
+        <span>NETWORK // LOCAL ONLY</span>
+        <span id="networkPrivacy">IP / ISP / VPN NOT READ</span>
+      </div>
+      <div class="network-stats">
+        <div class="network-stat"><span class="network-label">MACHINE</span><span class="network-value" id="machineName">DETECTING</span></div>
+        <div class="network-stat"><span class="network-label">LINK</span><span class="network-value" id="networkStatus">CHECKING</span></div>
+        <div class="network-stat"><span class="network-label">CPU</span><span class="network-value" id="machineCpu">HELPER NOT INSTALLED</span></div>
+        <div class="network-stat"><span class="network-label">RAM</span><span class="network-value" id="machineMemory">HELPER NOT INSTALLED</span></div>
+        <div class="network-stat"><span class="network-label">OS</span><span class="network-value" id="machineOs">HELPER NOT INSTALLED</span></div>
+        <div class="network-stat"><span class="network-label">TYPE</span><span class="network-value" id="networkType">NOT REPORTED</span></div>
+        <div class="network-stat"><span class="network-label">HOME DISK</span><span class="network-value" id="machineStorage">HELPER NOT INSTALLED</span></div>
+      </div>
+    </section>
+
+    <!-- ── MAIN CONTENT ───────────────────────────────────── -->
+    <main class="main">
+
+      <!-- HUD corner accents -->
+      <div class="hud-corner c-tl"></div>
+      <div class="hud-corner c-tr"></div>
+      <div class="hud-corner c-bl"></div>
+      <div class="hud-corner c-br"></div>
+
+      <section class="system-hud" aria-label="Conky-inspired system time display">
+        <div class="hud-heading">
+          <span class="hud-label"><span class="terminal-prompt" id="terminalHeader">root@PinoyUnknown:~$</span> conky --hud</span>
+          <span class="hud-live"><span class="hud-live-dot"></span>LIVE</span>
+        </div>
+        <div class="access-line"><span>ACCESS MODE // SIMULATED HUD</span><strong>ACCESS GRANTED</strong></div>
+        <div class="clock-block">
+          <div class="clock" id="clock">00:00:00</div>
+          <div class="date-row">
+            <span class="date" id="date">—</span>
+            <span class="date-sep">·</span>
+            <span class="tz" id="tz">UTC</span>
+          </div>
+        </div>
+        <div class="terminal-caption">
+          <span class="terminal-prompt" id="terminalPrompt">root@PinoyUnknown:~$</span>
+          <span class="terminal-command" id="terminalQuery">watch -n 1 local_hud</span>
+          <span class="terminal-caret"></span>
+        </div>
+        <div class="hud-footer">
+          <span>THEME PROFILE</span>
+          <span class="hud-profile" id="hudProfile">CYBERPUNK NEON</span>
+          <span class="hud-runtime">CYBERSECURITY THEME / v1.0.1</span>
+        </div>
+      </section>
+
+      <section class="bookmarks-panel" aria-labelledby="bookmarksTitle">
+        <div class="bookmarks-heading">
+          <span class="bookmarks-title" id="bookmarksTitle">SAVED BOOKMARKS</span>
+          <span class="bookmarks-hint">RECENTLY SAVED</span>
+        </div>
+        <div class="bookmarks-list" id="bookmarksList" aria-live="polite">
+          <span class="bookmarks-state">Loading bookmarks…</span>
+        </div>
+      </section>
+
+      <!-- Planet Globe HUD -->
+      <div id="planetGlobe" class="planet-globe" aria-label="Rotating planet globe" role="img"></div>
+
+      <!-- Greeting -->
+      <div class="greeting" id="greeting">Good evening, Explorer</div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="engine-tabs" id="engineTabs">
+          <button class="eng-btn active" data-url="https://www.google.com/search?q=">G</button>
+          <button class="eng-btn" data-url="https://www.bing.com/search?q=">B</button>
+          <button class="eng-btn" data-url="https://duckduckgo.com/?q=">🦆</button>
+          <button class="eng-btn" data-url="https://www.youtube.com/results?search_query=">▶</button>
+        </div>
+        <div class="search-bar">
+          <span class="srch-icon">⌕</span>
+          <input type="text" id="searchInput" class="srch-input" placeholder="Search the network…" autocomplete="off">
+          <button class="srch-btn" id="searchBtn">⏎</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── DEVELOPER FOOTER ────────────────────────────────── -->
+    <footer class="dev-footer">
+      <div class="dev-footer-inner">
+        <span class="dev-brand">PINOYUNKNOWN · UNIDENTIFIEDCYBERGHOST</span>
+        <div class="footer-links">
+          <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="footer-link" target="_blank" title="Google Play Store — PinoyUnknown Apps">🎮 Play Store</a>
+          <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="footer-link" target="_blank" title="Firefox Add-ons — PinoyUnknown">🦊 Firefox Addons</a>
+          <a href="https://github.com/unidentifiedcyberghost" class="footer-link" target="_blank" title="GitHub — unidentifiedcyberghost">🐙 CyberHost</a>
+          <a href="https://github.com/pinoyUnknown" class="footer-link" target="_blank" title="GitHub — PinoyUnknown">🐙 PinoyUnk</a>
+          <a href="https://instagram.com/pinoyunknown" class="footer-link" target="_blank" title="Instagram @pinoyunknown">📸 Instagram</a>
+          <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="footer-link" target="_blank" title="YouTube — PinoyUnknown">▶ YouTube</a>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /page -->
+
+  <script src="../shared/themes.js"></script>
+  <script src="newtab.js"></script>
+</body>
+</html>

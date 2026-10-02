@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>New Tab · Theme Forge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;600;700;900&family=Ubuntu:wght@300;400;700&family=Ubuntu+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="newtab.css">
+</head>
+<body>
+  <!-- Animated background canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="page" id="page">
+
+    <!-- ── TOP BAR ───────────────────────────────────────── -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="tb-dot"></span>
+        <span class="tb-theme" id="tbTheme">Cyberpunk Neon</span>
+      </div>
+      <div class="topbar-right">
+        <span class="tb-tag">THEME FORGE v1.0.0</span>
+      </div>
+    </div>
+
+    <!-- ── MAIN CONTENT ───────────────────────────────────── -->
+    <main class="main">
+
+      <!-- HUD corner accents -->
+      <div class="hud-corner c-tl"></div>
+      <div class="hud-corner c-tr"></div>
+      <div class="hud-corner c-bl"></div>
+      <div class="hud-corner c-br"></div>
+
+      <!-- Clock & Date -->
+      <div class="clock-block">
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="date-row">
+          <span class="date" id="date">—</span>
+          <span class="date-sep">·</span>
+          <span class="tz" id="tz">UTC</span>
+        </div>
+      </div>
+
+      <!-- Greeting -->
+      <div class="greeting" id="greeting">Good evening, Explorer</div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="engine-tabs" id="engineTabs">
+          <button class="eng-btn active" data-url="https://www.google.com/search?q=">G</button>
+          <button class="eng-btn" data-url="https://www.bing.com/search?q=">B</button>
+          <button class="eng-btn" data-url="https://duckduckgo.com/?q=">🦆</button>
+          <button class="eng-btn" data-url="https://www.youtube.com/results?search_query=">▶</button>
+        </div>
+        <div class="search-bar">
+          <span class="srch-icon">⌕</span>
+          <input type="text" id="searchInput" class="srch-input" placeholder="Search the network…" autocomplete="off">
+          <button class="srch-btn" id="searchBtn">⏎</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── DEVELOPER FOOTER ────────────────────────────────── -->
+    <footer class="dev-footer">
+      <div class="dev-footer-inner">
+        <span class="dev-brand">PINOYUNKNOWN · UNIDENTIFIEDCYBERGHOST</span>
+        <div class="footer-links">
+          <a href="https://play.google.com/store/apps/dev?id=7374638355121114347" class="footer-link" target="_blank" title="Google Play Store — PinoyUnknown Apps">🎮 Play Store</a>
+          <a href="https://addons.mozilla.org/en-US/firefox/user/20195701/" class="footer-link" target="_blank" title="Firefox Add-ons — PinoyUnknown">🦊 Firefox Addons</a>
+          <a href="https://github.com/unidentifiedcyberghost" class="footer-link" target="_blank" title="GitHub — unidentifiedcyberghost">🐙 CyberHost</a>
+          <a href="https://github.com/pinoyUnknown" class="footer-link" target="_blank" title="GitHub — PinoyUnknown">🐙 PinoyUnk</a>
+          <a href="https://instagram.com/pinoyunknown" class="footer-link" target="_blank" title="Instagram @pinoyunknown">📸 Instagram</a>
+          <a href="https://www.youtube.com/watch?v=zrF1EoEh1-w" class="footer-link" target="_blank" title="YouTube — PinoyUnknown">▶ YouTube</a>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /page -->
+
+  <script src="../shared/themes.js"></script>
+  <script src="newtab.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09051d"/>
+      <stop offset=".52" stop-color="#11102f"/>
+      <stop offset="1" stop-color="#070914"/>
+    </linearGradient>
+    <radialGradient id="horizon" cx="0" cy="0" r="1" gradientTransform="matrix(0 480 -900 0 805 573)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#59206d" stop-opacity=".68"/>
+      <stop offset=".52" stop-color="#162c63" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#080914" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tower" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#1b2046"/>
+      <stop offset="1" stop-color="#090b19"/>
+    </linearGradient>
+    <linearGradient id="road" x1="800" y1="520" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#142141" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#050711" stop-opacity=".95"/>
+    </linearGradient>
+    <pattern id="windows" width="34" height="40" patternUnits="userSpaceOnUse">
+      <path d="M7 8h11v2H7zM23 24h6v2h-6z" fill="#45dfff" fill-opacity=".42"/>
+      <path d="M7 29h5v2H7z" fill="#ff4fc8" fill-opacity=".38"/>
+    </pattern>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1600v900H0z"/>
+  <path fill="url(#horizon)" d="M0 0h1600v900H0z"/>
+  <circle cx="1190" cy="190" r="76" fill="#d9ceff" fill-opacity=".08"/>
+  <circle cx="1190" cy="190" r="55" fill="#c8bdff" fill-opacity=".13"/>
+  <path d="M0 560 74 560V397h76v163h38V323h91v237h35V425h91v135h44V289h105v271h36V376h79v184h53V343h111v217h32V414h81v146h42V296h112v264h35V382h72v178h39V455h89v105h45V340h84v220h52v340H0z" fill="url(#tower)"/>
+  <path d="M0 560 74 560V397h76v163h38V323h91v237h35V425h91v135h44V289h105v271h36V376h79v184h53V343h111v217h32V414h81v146h42V296h112v264h35V382h72v178h39V455h89v105h45V340h84v220h52v340H0z" fill="url(#windows)" opacity=".7"/>
+  <path d="M0 560h1600v340H0z" fill="url(#road)"/>
+  <path d="M0 561h1600" stroke="#64dcff" stroke-opacity=".65" filter="url(#glow)"/>
+  <path d="M0 624h1600M0 690h1600M0 765h1600" stroke="#5c77bd" stroke-opacity=".16"/>
+  <path d="m770 561-168 339M830 561l168 339" stroke="#ff4fc8" stroke-opacity=".55" filter="url(#glow)"/>
+  <path d="m800 575-20 325M800 575l20 325" stroke="#74eaff" stroke-opacity=".3"/>
+  <path d="M105 458h120M446 355h72M680 407h99M1050 359h82M1340 417h112" stroke="#5fe4ff" stroke-width="3" stroke-opacity=".8" filter="url(#glow)"/>
+  <path d="M190 491h50M919 449h92M1210 472h84M506 424h42" stroke="#ff5bcf" stroke-width="3" stroke-opacity=".75" filter="url(#glow)"/>
+  <path d="M0 0h1600v900H0z" fill="#050713" fill-opacity=".22"/>
+</svg>
