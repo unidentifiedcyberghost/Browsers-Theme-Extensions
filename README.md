@@ -43,7 +43,7 @@ The search-engine selector is positioned above the central clock. The right rail
 
 The world-clock rail is placed near the top of the right column. It shows all 17 location clocks at once, without an internal scrollbar; country labels are bold white text with no glow effect for readability.
 
-The center clock is intentionally compact and the search field has a brighter accent border, background, and focus state so users can find search quickly.
+The center greeting, search-engine selector, and search input appear before the main clock panel. The center clock is intentionally compact, and the search field has a brighter accent border, background, and focus state so users can find it quickly.
 
 ---
 

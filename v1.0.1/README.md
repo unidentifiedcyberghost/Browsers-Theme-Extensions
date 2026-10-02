@@ -37,7 +37,7 @@ The terminal echoes text typed into the new-tab search box with a typing animati
 | 🔍 **Multi-Engine Search** | Google, Bing, DuckDuckGo, YouTube — switch engines from new tab |
 | 📱 **Cross-Browser** | Chrome MV3, Firefox MV2, Edge, Brave |
 
-The world-clock rail sits high in the right column and shows all 17 locations at once without a scrollbar; country names are bold white and have no glow. The center clock is compact with reduced visual effects, while the search field has a stronger accent border, background, and focus state.
+The world-clock rail sits high in the right column and shows all 17 locations at once without a scrollbar; country names are bold white and have no glow. The greeting, search-engine selector, and search input appear before the main clock panel. The center clock is compact with reduced visual effects, while the search field has a stronger accent border, background, and focus state.
 
 ---
 

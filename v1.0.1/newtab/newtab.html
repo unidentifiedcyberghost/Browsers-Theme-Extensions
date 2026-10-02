@@ -99,11 +99,20 @@
         </section>
 
         <div class="main-center">
-          <div class="engine-tabs" id="engineTabs" aria-label="Choose a search engine">
-            <button class="eng-btn active" data-url="https://www.google.com/search?q=" aria-label="Search with Google" title="Google">G</button>
-            <button class="eng-btn" data-url="https://www.bing.com/search?q=" aria-label="Search with Bing" title="Bing">B</button>
-            <button class="eng-btn" data-url="https://duckduckgo.com/?q=" aria-label="Search with DuckDuckGo" title="DuckDuckGo">D</button>
-            <button class="eng-btn" data-url="https://www.youtube.com/results?search_query=" aria-label="Search with YouTube" title="YouTube">YT</button>
+          <div class="greeting" id="greeting">Good evening, Explorer</div>
+
+          <div class="search-wrap">
+            <div class="engine-tabs" id="engineTabs" aria-label="Choose a search engine">
+              <button class="eng-btn active" data-url="https://www.google.com/search?q=" aria-label="Search with Google" title="Google">G</button>
+              <button class="eng-btn" data-url="https://www.bing.com/search?q=" aria-label="Search with Bing" title="Bing">B</button>
+              <button class="eng-btn" data-url="https://duckduckgo.com/?q=" aria-label="Search with DuckDuckGo" title="DuckDuckGo">D</button>
+              <button class="eng-btn" data-url="https://www.youtube.com/results?search_query=" aria-label="Search with YouTube" title="YouTube">YT</button>
+            </div>
+            <div class="search-bar">
+              <span class="srch-icon">⌕</span>
+              <input type="text" id="searchInput" class="srch-input" placeholder="Search the network…" autocomplete="off">
+              <button class="srch-btn" id="searchBtn" aria-label="Search">⏎</button>
+            </div>
           </div>
 
           <section class="system-hud" aria-label="Conky-inspired system time display">
@@ -131,18 +140,6 @@
               <span class="hud-runtime">CYBERSECURITY THEME / v1.0.1</span>
             </div>
           </section>
-
-          <!-- Greeting -->
-          <div class="greeting" id="greeting">Good evening, Explorer</div>
-
-          <!-- Search -->
-          <div class="search-wrap">
-            <div class="search-bar">
-              <span class="srch-icon">⌕</span>
-              <input type="text" id="searchInput" class="srch-input" placeholder="Search the network…" autocomplete="off">
-              <button class="srch-btn" id="searchBtn">⏎</button>
-            </div>
-          </div>
         </div>
 
         <aside class="right-rail" aria-label="World clocks and referral links">
