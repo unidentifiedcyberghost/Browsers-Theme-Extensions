@@ -1,4 +1,4 @@
-# 🔥 CyberSecurity Theme v1.0.1
+<img width="1365" height="771" alt="version 1 theme blackhat hacker theme selection" src="https://github.com/user-attachments/assets/9bc09783-35a5-463c-997d-23059c39ed78" /># 🔥 CyberSecurity Theme v1.0.1
 
 > **Choose your aesthetic. Forge your browser.**
 > Cross-browser theme extension for Chrome, Firefox, Edge, Brave, and all Chromium browsers.
@@ -6,6 +6,17 @@
 ## Current release: v1.0.1
 
 The v1.0.1 update adds 11 distinct animated themes with bundled artwork, a responsive Conky-style new-tab HUD, in-page About/theme controls, synthesized glitch sounds, saved bookmarks and local search history, world clocks, a currency reference ticker, and optional network/system information. Public IP lookup is opt-in; local machine metrics require the separately installed native helper. Exchange rates are daily reference data, not live trading quotes.
+
+this is the new version
+<img width="1920" height="1082" alt="HTB THEME" src="https://github.com/user-attachments/assets/3f07a71c-2860-4add-9baf-f736374b84fc" />
+
+while the old version is looks like this: 
+<img width="1365" height="771" alt="version 1 theme blackhat hacker theme selection" src="https://github.com/user-attachments/assets/fbe9b2dc-d87f-4396-b47c-d486b10c2b64" />
+<img width="1363" height="769" alt="version 1 theme pinoyunknown" src="https://github.com/user-attachments/assets/54d24717-214c-439d-8e9a-0621918b1f7b" />
+<img width="1361" height="771" alt="version 1 theme pinoyunknown theme selection" src="https://github.com/user-attachments/assets/2da183c3-adee-47f3-8d76-740f1a9f6689" />
+
+
+
 
 Public IP lookup is off until the user opts in and grants the optional `api.ipify.org` host permission. If enabled, that service receives the request IP and returns it for display; it is not sent to the extension developer. The private interface IP is read locally by the optional native helper. ISP and VPN details are not requested. The user can disable public lookup in the popup at any time.
 
