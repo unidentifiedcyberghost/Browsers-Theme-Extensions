@@ -57,6 +57,14 @@ try {
             if ($manifest.version -ne '1.0.1' -or $manifest.manifest_version -ne $package.ManifestVersion) {
                 throw "Package manifest is not the expected release: $($package.Path)"
             }
+            if ($package.ManifestVersion -eq 2 -and
+                ($null -eq $manifest.background.scripts -or $null -ne $manifest.background.service_worker)) {
+                throw "Firefox package must declare background.scripts and must not declare service_worker: $($package.Path)"
+            }
+            if ($package.ManifestVersion -eq 3 -and
+                ($null -eq $manifest.background.service_worker -or $null -ne $manifest.background.scripts)) {
+                throw "Chromium package must declare background.service_worker and must not declare background.scripts: $($package.Path)"
+            }
             foreach ($requiredEntry in @('newtab/newtab.html', 'popup/popup.html', 'background/background.js')) {
                 if ($null -eq $zip.GetEntry($requiredEntry)) {
                     throw "Package is missing $requiredEntry : $($package.Path)"

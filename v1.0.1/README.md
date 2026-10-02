@@ -68,7 +68,7 @@ The world-clock rail sits high in the right column and shows all 17 locations at
 **Brave / Opera:** For testing, load the unpacked folder from `brave://extensions` or `opera://extensions`. For distribution, use a compatible Chromium Web Store listing where supported or submit the Chromium ZIP through the browser's official extension developer portal.
 
 ### Firefox
-**Temporary testing:** Extract `packages/CyberSecurityTheme-v1.0.1-firefox.zip`, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…**, and select the extracted `manifest.json`. Firefox removes temporary add-ons on restart.
+**Temporary testing:** Extract `packages/CyberSecurityTheme-v1.0.1-firefox.zip`, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…**, and select the extracted package's root `manifest.json`. Do not select this source folder's `v1.0.1/manifest.json`: that is the Chromium Manifest V3 file with `background.service_worker`. The Firefox package manifest is v2 and declares `background.scripts`. Firefox removes temporary add-ons on restart.
 
 **AMO submission/update:** Sign in to the [AMO Developer Hub](https://addons.mozilla.org/developers/), choose **Submit a New Add-on** and **On this site** for a new listing, or open the existing listing to submit an update. Upload the Firefox ZIP, pass AMO validation, finish the listing and privacy/data-use questionnaire, and provide source code if AMO requests it. Submit for review and track signing/review status in the Developer Hub. Public distribution starts only after approval.
 

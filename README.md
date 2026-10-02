@@ -93,6 +93,8 @@ Brave can load the unpacked folder using `brave://extensions`; it can also use c
 3. Click **Load Temporary Add-on…** and select the extracted package's `manifest.json`.
 4. Open a new tab to check the interface. Temporary add-ons are removed when Firefox restarts.
 
+**Important:** Select `manifest.json` from the extracted `CyberSecurityTheme-v1.0.1-firefox` package folder. Do not select `v1.0.1/manifest.json`; that is the Chromium Manifest V3 file and uses `background.service_worker`. The Firefox package uses Manifest V2 with `background.scripts`.
+
 #### Submit to Firefox Add-ons (AMO)
 1. Sign in to the [AMO Developer Hub](https://addons.mozilla.org/developers/) using the account that owns the add-on.
 2. Choose **Submit a New Add-on** and select **On this site** for AMO distribution.
